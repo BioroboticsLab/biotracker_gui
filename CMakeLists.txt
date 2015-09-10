@@ -1,100 +1,149 @@
-file(GLOB_RECURSE src RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
-file(GLOB_RECURSE hdr RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.h *.hpp)
-file(GLOB_RECURSE ui RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.ui)
-file(GLOB_RECURSE qrc RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.qrc)
 
-qt5_add_resources(UI_RESOURCES ${qrc})
-qt5_wrap_ui(UI_HEADERS ${ui})
+cmake_minimum_required(VERSION 2.8.7 FATAL_ERROR)
+project(biotracker)
 
-add_executable(BioTracker
-    ${src} ${hdr} ${UI_RESOURCES} ${UI_HEADERS}
+#------------------------------------------------------------------------------
+# Required CPM Setup - no need to modify - See: https://github.com/iauns/cpm
+#------------------------------------------------------------------------------
+
+set(CPM_DIR "${CMAKE_CURRENT_BINARY_DIR}/cpm_packages" CACHE TYPE STRING)
+find_package(Git)
+if(NOT GIT_FOUND)
+  message(FATAL_ERROR "CPM requires Git.")
+endif()
+if (NOT EXISTS ${CPM_DIR}/CPM.cmake)
+  message(STATUS "Cloning repo (https://github.com/iauns/cpm)")
+  execute_process(
+    COMMAND "${GIT_EXECUTABLE}" clone https://github.com/iauns/cpm ${CPM_DIR}
+    RESULT_VARIABLE error_code
+    OUTPUT_QUIET ERROR_QUIET)
+  if(error_code)
+    message(FATAL_ERROR "CPM failed to get the hash for HEAD")
+  endif()
+endif()
+include(${CPM_DIR}/CPM.cmake)
+
+#------------------------------------------------------------------------------
+# CPM Modules
+#------------------------------------------------------------------------------
+
+CPM_AddModule("biotracker_core"
+    SOURCE_DIR "${PROJECT_DIR}../biotracker_core"
+    #GIT_REPOSITORY "https://github.com/BioroboticsLab/biotracker_core.git"
+    #GIT_TAG "7207fe2f78c27adf785a9056b709b0587e56640b"
+    )
+
+CPM_Finish()
+
+find_package(OpenCV REQUIRED)
+find_package(OpenGL REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5OpenGL REQUIRED)
+find_package(Threads REQUIRED)
+find_package(PythonLibs  REQUIRED)
+find_package(Boost COMPONENTS filesystem serialization system REQUIRED)
+
+include_directories(
+    ${PROJECT_SOURCE_DIR}
+    #SYSTEM ${CMAKE_CURRENT_BINARY_DIR}
+    SYSTEM ${Qt5Widgets_INCLUDE_DIRS}
+    SYSTEM ${OpenCV_INCLUDE_DIRS}
+    SYSTEM ${Qt5OpenGL_INCLUDE_DIRS}
+    SYSTEM ${PYTHON_INCLUDE_DIRS}
 )
- 
-target_link_libraries(BioTracker
-    Core
-    Util
-    Qt5::Widgets
-    Qt5::OpenGL
-    ${OPENGL_LIBRARIES}
-    ${OpenCV_LIBS}
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${Boost_LIBRARIES}
-)
 
-# automatic copy of required dlls to install prefix for windows
-if(WIN32)
-	set(APPS "\${CMAKE_INSTALL_PREFIX}/BioTracker.exe")
-	install(TARGETS BioTracker
-		BUNDLE DESTINATION . COMPONENT Runtime
-		RUNTIME DESTINATION . COMPONENT Runtime)
-
-	set(PLUGINS "")
-	file(TO_CMAKE_PATH ${OpenCV_DIR} OpenCV_DIR)
-	set(LIBRARY_DIRS "${OpenCV_DIR} ${Qt5Core_DIR} ${Qt5Gui_DIR} ${Qt5OpenGL_DIR} ${Qt5Widgets_DIR}")
-	install(CODE "
-	  include(BundleUtilities)
-	  fixup_bundle(\"${APPS}\" \"\${PLUGINS}\" \"${LIBRARY_DIRS}\")
-	  " COMPONENT Runtime)
-	install(FILES
-	  ${Qt5Core_DIR}/../../../plugins/platforms/qwindows.dll
-	  DESTINATION "${CMAKE_INSTALL_PREFIX}/platforms"
-	)
-	
-	include(GetGitRevisionDescription)
-	get_git_head_revision(GIT_REFSPEC GIT_SHA1)
-	string(SUBSTRING ${GIT_SHA1} 0 7 GIT_SHA1)
-	string(TIMESTAMP timestamp "%Y%m%d")
-	
-	set(CPACK_PACKAGE_FILE_NAME "BioTracker-${timestamp}-${GIT_SHA1}")
-	set(CPACK_GENERATOR "ZIP")
-	
-	include(CPACK)
+# remove all previously set compiler and linker flags for debug build
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+    set(CMAKE_CXX_FLAGS "")
+    set(CMAKE_EXE_LINKER_FLAGS "")
 endif()
 
-# add files to source groups to preserve folder structure in visual studio
-# adapted from: http://goo.gl/Xde41i
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR
+   "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    # using Clang or GCC
+    # minimal optimmization and debug symbols for debug builds
+    set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g3")
+    # enable optimization for release builds
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -DQT_NO_DEBUG")
+    # enable C++1y
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -fPIC")
+    # enable all warnings
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Woverloaded-virtual -Wold-style-cast -Wnon-virtual-dtor -Wsign-promo -Wno-missing-braces")
+    # warnings are errors
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wno-error=unused-variable -Wno-error=unused-parameter")
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    # using Visual Studio C++
+    # Force to always compile with W3 and treat warnings as errors
+    # W4 would be preferable, but causes to many warnings in included files
+    if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+        string(REGEX REPLACE "/W[0-4]" "/W3" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    else()
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3")
+    endif()
+	# warnings are errors
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX")
+	# disable warning 4503 on visual studio (boost)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4503")
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif()
 
-set(ALL_FILES ${src} ${hdr} ${ui} ${qrc})
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+	# determine clang version
+	EXECUTE_PROCESS( COMMAND ${CMAKE_CXX_COMPILER} --version OUTPUT_VARIABLE clang_full_version_string )
+	string (REGEX REPLACE ".*clang version ([0-9]+\\.[0-9]+).*" "\\1" CLANG_VERSION_STRING ${clang_full_version_string})
+	if (CLANG_VERSION_STRING VERSION_GREATER 3.5)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=inconsistent-missing-override")
+	endif()
+	# gcc doesn't know about unused-private-field warning
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=unused-private-field")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=absolute-value")
+    # use Wdocumentation
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wdocumentation")
+    # enable thread safety analysis
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wthread-safety")
+    # enable thread safety analysis
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wimplicit-fallthrough")
+    # implicit conversion warnings
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wfloat-conversion")
+    # osx clang3.6 throw additional warnings
+    if(${APPLE})
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-inconsistent-missing-override -Wno-deprecated-declarations")
+        set(CMAKE_CXX_LINK_FLAGS_DEBUG "-lc++abi")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_CXX_LINK_FLAGS_DEBUG}")
+    endif()
+endif()
 
-foreach(FILE ${ALL_FILES}) 
-  get_filename_component(PARENT_DIR "${FILE}" PATH)
+message("${CLANG_VERSION}")
 
-  # skip src or include and changes /'s to \\'s
-  string(REGEX REPLACE "(\\./)?(src|include)/?" "" GROUP "${PARENT_DIR}")
-  string(REPLACE "/" "\\" GROUP "${GROUP}")
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    # clang doesnt know about unused-but-set-variable warning
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=unused-but-set-variable")
 
-  # group into categories
-  if ("${FILE}" MATCHES ".*\\.cpp")
-    set(GROUP "Source Files\\${GROUP}")
-  elseif("${FILE}" MATCHES ".*\\.h")
-    set(GROUP "Header Files\\${GROUP}")
-  elseif("${FILE}" MATCHES ".*\\.ui")
-    set(GROUP "UI Files\\${GROUP}")
-  elseif("${FILE}" MATCHES ".*\\.qrc")
-    set(GROUP "Ressource Files\\${GROUP}")
-  endif()
+	execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion
+					OUTPUT_VARIABLE GCC_VERSION)
+	if (GCC_VERSION VERSION_GREATER 4.9 OR GCC_VERSION VERSION_EQUAL 4.9)
+		# implicit conversion warnings
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wfloat-conversion")
+	endif()
+endif()
 
-  source_group("${GROUP}" FILES "${FILE}")
-endforeach()
+# use runtime analyzers when using clang/gcc in debug mode
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+	if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" AND
+		(GCC_VERSION VERSION_GREATER 4.9 OR GCC_VERSION VERSION_EQUAL 4.9))
+		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer")
+		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-optimize-sibling-calls")
+		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address")
+		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=undefined")
+	endif()
 
-# also add generated files to a group
+	if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer")
+		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-optimize-sibling-calls")
+		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address")
+		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=undefined")
+		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=integer")
+	endif()
+endif()
 
-set(GENERATED_FILES ${UI_RESOURCES} ${UI_HEADERS})
-
-foreach(FILE ${GENERATED_FILES})
-  get_filename_component(REL_FILE ${FILE} NAME ${CMAKE_CURRENT_SOURCE_DIR})
-  #message(${REL_FILE})
-  get_filename_component(PARENT_DIR "${REL_FILE}" PATH)
-  #message(${PARENT_DIR})
-
-  # skip src or include and changes /'s to \\'s
-  string(REGEX REPLACE "(\\./)?(src|include)/?" "" GROUP "${PARENT_DIR}")
-  string(REPLACE "/" "\\" GROUP "${GROUP}")
-
-  # group into categories
-  set(GROUP "Generated Files\\${GROUP}")
-
-  source_group("${GROUP}" FILES "${FILE}")
-endforeach()
-
-
+add_subdirectory(biotracker)
