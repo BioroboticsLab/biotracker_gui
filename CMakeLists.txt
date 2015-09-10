@@ -28,10 +28,9 @@ include(${CPM_DIR}/CPM.cmake)
 #------------------------------------------------------------------------------
 
 CPM_AddModule("biotracker_core"
-    SOURCE_DIR "${PROJECT_DIR}../biotracker_core"
-    #GIT_REPOSITORY "https://github.com/BioroboticsLab/biotracker_core.git"
-    #GIT_TAG "7207fe2f78c27adf785a9056b709b0587e56640b"
-    )
+    GIT_REPOSITORY "https://github.com/BioroboticsLab/biotracker_core.git"
+    GIT_TAG "master"
+)
 
 CPM_Finish()
 
@@ -145,5 +144,10 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
 		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=integer")
 	endif()
 endif()
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON)
+add_definitions(${Qt5Widgets_DEFINITIONS})
+add_definitions(-DQT_NO_KEYWORDS)
 
 add_subdirectory(biotracker)
