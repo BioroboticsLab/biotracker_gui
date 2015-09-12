@@ -27,10 +27,17 @@ include(${CPM_DIR}/CPM.cmake)
 # CPM Modules
 #------------------------------------------------------------------------------
 
-CPM_AddModule("biotracker_core"
-    GIT_REPOSITORY "https://github.com/BioroboticsLab/biotracker_core.git"
-    GIT_TAG "master"
-)
+if(NOT DEFINED BIOTRACKER_CORE_PATH)
+	CPM_AddModule("biotracker_core"
+		GIT_REPOSITORY "https://github.com/BioroboticsLab/biotracker_core.git"
+		GIT_TAG "master"
+	)
+else()
+	CPM_AddModule("biotracker_core"
+		SOURCE_DIR "${BIOTRACKER_CORE_PATH}"
+	)
+endif()
+
 
 CPM_Finish()
 
