@@ -3,7 +3,7 @@ The BioTracker is an open-source video tracking framework for the analysis of an
 It allows users to apply various tracking algorithms on images, videos and camera streams.
 This repository contains the GUI frontend for the [BioTracker](https://github.com/BioroboticsLab/biotracker_core/tree/master).
 
-![BioTracker GUI](https://cloud.githubusercontent.com/assets/831215/10981924/c24b8330-840a-11e5-941f-726a5b0f7df8.png)
+![BioTracker GUI](https://cloud.githubusercontent.com/assets/831215/10982001/2ca550c6-840b-11e5-9bd8-f4e13846438d.png)
 
 ## Dependencies
 ### Unix
