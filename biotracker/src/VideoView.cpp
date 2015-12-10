@@ -22,6 +22,7 @@ VideoView::VideoView(QWidget *parent, Core::BioTrackerApp &biotracker)
     , m_screenPicRatio(0)
     , m_texture(this)
     , m_biotracker(biotracker)
+    , m_view(TrackingAlgorithm::OriginalView)
     , m_painter()
     , m_firstAttempt(true) {
     QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -92,7 +93,7 @@ void VideoView::resizeEvent(QResizeEvent *event) {
 
 void VideoView::paintEvent(QPaintEvent *) {
     directPaint(this->width(), this->height(), false);
-    m_biotracker.paint(*this, m_painter);
+    m_biotracker.paint(*this, m_painter, m_view);
 }
 
 void VideoView::firstPaint() {

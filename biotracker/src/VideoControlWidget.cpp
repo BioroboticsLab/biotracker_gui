@@ -124,6 +124,14 @@ void VideoControlWidget::initConnects() {
     // speed slider
     QObject::connect(m_ui.sld_speed, &QSlider::valueChanged, this,
                      &VideoControlWidget::speedSliderValueChanged);
+
+    QObject::connect(m_ui.comboBoxSelectedView, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged),
+        this, &VideoControlWidget::viewChanged);
+
+    QObject::connect(&m_bioTracker, &Core::BioTrackerApp::registerViews, this,
+                     &VideoControlWidget::registerViews);
+
+
 }
 
 void VideoControlWidget::playPause() {
@@ -212,6 +220,22 @@ void VideoControlWidget::speedSliderValueChanged(int speed) {
     } else {
         m_bioTracker.setMaxSpeed(true);
         m_ui.fps_label->setText("max");
+    }
+}
+
+void VideoControlWidget::viewChanged(QString n) {
+    auto view = TrackingAlgorithm::OriginalView;
+    if (n != "Original") {
+        view.name = n.toUtf8().constData();
+    }
+    m_videoView->setView(view);
+}
+
+void VideoControlWidget::registerViews(const std::vector<TrackingAlgorithm::View> views) {
+    m_ui.comboBoxSelectedView->clear();
+    m_ui.comboBoxSelectedView->addItem("Original");
+    for (auto view : views) {
+        m_ui.comboBoxSelectedView->addItem(QString::fromStdString(view.name));
     }
 }
 

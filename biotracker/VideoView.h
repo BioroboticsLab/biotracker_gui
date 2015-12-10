@@ -40,6 +40,10 @@ class VideoView : public QOpenGLWidget, protected QOpenGLFunctions {
 
     bool isZoomed();
 
+    void setView(TrackingAlgorithm::View v) {
+        m_view = v;
+    }
+
 public Q_SLOTS:
     void setMode(const Mode mode);
     void fitToWindow();
@@ -96,6 +100,8 @@ private Q_SLOTS:
     Core::TextureObject m_texture;
 
     Core::BioTrackerApp &m_biotracker;
+
+    TrackingAlgorithm::View m_view;
 
     /**
      * @brief m_painter
