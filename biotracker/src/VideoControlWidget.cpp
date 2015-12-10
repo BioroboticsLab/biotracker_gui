@@ -231,6 +231,20 @@ void VideoControlWidget::viewChanged(QString n) {
     m_videoView->setView(view);
 }
 
+void repaintVideoView(VideoView *videoView) {
+    if (!videoView->isZoomed()) {
+        // TODO: fix this ugly hack
+        //videoView->resize(videoView->width() + 1, videoView->height());
+        //videoView->resize(videoView->width() - 1, videoView->height());
+    }
+    videoView->update();
+}
+
+void VideoControlWidget::onRequestRepaint()
+{
+    repaintVideoView(m_videoView);
+}
+
 void VideoControlWidget::registerViews(const std::vector<TrackingAlgorithm::View> views) {
     m_ui.comboBoxSelectedView->clear();
     m_ui.comboBoxSelectedView->addItem("Original");
@@ -276,12 +290,7 @@ void VideoControlWidget::frameCalculated(const size_t frameNumber,
 
     const bool hasNext = frameNumber < m_bioTracker.getNumFrames() - 1;
 
-    if (!m_videoView->isZoomed()) {
-        // TODO: fix this ugly hack
-        m_videoView->resize(m_videoView->width() + 1, m_videoView->height());
-        m_videoView->resize(m_videoView->width() - 1, m_videoView->height());
-    }
-    m_videoView->update();
+    repaintVideoView(m_videoView);
 
     m_ui.sld_video->setValue(frameNumber);
     m_ui.frame_num_edit->setText(QString::number(frameNumber));

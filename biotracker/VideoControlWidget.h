@@ -61,6 +61,7 @@ class VideoControlWidget : public QWidget {
     void videoSliderPressed();
     void speedSliderValueChanged(int value);
     void viewChanged(QString);
+    void onRequestRepaint();
     void registerViews(const std::vector<TrackingAlgorithm::View> view);
 };
 
