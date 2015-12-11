@@ -130,7 +130,8 @@ void VideoControlWidget::initConnects() {
 
     QObject::connect(&m_bioTracker, &Core::BioTrackerApp::registerViews, this,
                      &VideoControlWidget::registerViews);
-
+    QObject::connect(&m_bioTracker, &Core::BioTrackerApp::requestPaint, this,
+                     &VideoControlWidget::onRequestRepaint);
 
 }
 
