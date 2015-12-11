@@ -41,7 +41,7 @@ CPM_Finish()
 
 biorobotics_config()
 
-set(OpenCV_STATIC ON)
+set(OpenCV_STATIC OFF)
 find_package(OpenCV REQUIRED)
 
 find_package(OpenGL REQUIRED)
@@ -50,7 +50,7 @@ find_package(Qt5OpenGL REQUIRED)
 find_package(Threads REQUIRED)
 find_package(PythonLibs  REQUIRED)
 
-set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_STATIC_LIBS OFF)
 find_package(Boost COMPONENTS filesystem serialization system REQUIRED)
 
 include_directories(
