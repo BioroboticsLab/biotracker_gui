@@ -48,7 +48,6 @@ find_package(OpenGL REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5OpenGL REQUIRED)
 find_package(Threads REQUIRED)
-find_package(PythonLibs  REQUIRED)
 
 set(Boost_USE_STATIC_LIBS OFF)
 find_package(Boost COMPONENTS filesystem serialization system REQUIRED)
@@ -58,7 +57,6 @@ include_directories(
     SYSTEM ${Qt5Widgets_INCLUDE_DIRS}
     SYSTEM ${OpenCV_INCLUDE_DIRS}
     SYSTEM ${Qt5OpenGL_INCLUDE_DIRS}
-    SYSTEM ${PYTHON_INCLUDE_DIRS}
 )
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
