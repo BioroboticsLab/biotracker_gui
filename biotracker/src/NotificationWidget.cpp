@@ -21,6 +21,9 @@ void NotificationWidget::notify(const std::string &message,
     case MSGS::FILE_OPEN:
         m_ui.edit_notification->append(QString(message.c_str()));
         break;
+    case MSGS::NOTIFICATION:
+        m_ui.edit_notification->append(QString(message.c_str()));
+        break;
     default:
         ;
     }
