@@ -27,6 +27,11 @@ VideoView::VideoView(QWidget *parent, Core::BioTrackerApp &biotracker)
     , m_firstAttempt(true) {
     QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     setSizePolicy(sizePolicy);
+
+    QSurfaceFormat format = QSurfaceFormat::defaultFormat();
+    format.setSamples(94);
+    this->setFormat(format);
+
 }
 
 void VideoView::setMode(const VideoView::Mode mode) {
@@ -67,33 +72,37 @@ void VideoView::handleLoggedMessage(const QOpenGLDebugMessage &debugMessage) {
 }
 
 void VideoView::initializeGL() {
-    makeCurrent();
-    initializeOpenGLFunctions();
 
-    m_openGLLogger.initialize(); // initializes in the current context, i.e. ctx
-    connect(&m_openGLLogger, &QOpenGLDebugLogger::messageLogged, this,
-            &VideoView::handleLoggedMessage);
-    m_openGLLogger.startLogging();
+    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+    f->glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    resizeGL(width(), height());
     m_biotracker.initializeOpenGL(context(), this->getTexture());
 }
 
-void VideoView::resizeGL(int width, int height) {
-    directPaint(width, height, false);
+void VideoView::resizeGL(int w, int h) {
+
+    //m_projection.setToIdentity();
+    //m_projection.perspective(45.0f, w / float(h), 0.01f, 100.0f);
+
+
 }
 
-void VideoView::resizeEvent(QResizeEvent *event) {
-    QOpenGLWidget::resizeEvent(event);
-    if (isValid()) {
-        fitToWindow();
-    }
-}
+void VideoView::paintGL()
+{
+    QPainter painter(this);
+    painter.beginNativePainting();
 
-void VideoView::paintEvent(QPaintEvent *) {
-    directPaint(this->width(), this->height(), false);
-    m_biotracker.paint(*this, m_painter, m_view);
+    // actual opengl stuff
+    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+    f->glClear(GL_COLOR_BUFFER_BIT);
+
+    painter.endNativePainting();
+
+    m_biotracker.paint(*this, painter, m_view);
+
+    painter.setPen(QColor(255, 0, 0));
+    painter.drawRect(QRect(10, 20, 50, 60));
+
 }
 
 void VideoView::firstPaint() {
@@ -109,6 +118,7 @@ void VideoView::firstPaint() {
 
 void VideoView::directPaint(const size_t w, const size_t h, const bool fitToWindow)
 {
+   return;
    makeCurrent();
    if (w == 0 || h == 0) {
        return;
