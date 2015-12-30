@@ -7,8 +7,6 @@
 
 #include "MainWindow.h"
 
-#include "biotracker/util/QOpenGLContextWrapper.h"
-
 namespace BioTracker {
 namespace Gui {
 

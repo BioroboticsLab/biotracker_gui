@@ -53,28 +53,6 @@ private Q_SLOTS:
     void handleLoggedMessage(const QOpenGLDebugMessage &debugMessage);
 
   private:
-    /**
-     * @brief Used to store mouse cursor offsets while panning.
-     */
-    struct CurrentPanState {
-        QPointF lastPos;
-
-        CurrentPanState(const QPointF lastPos)
-            : lastPos(lastPos) {
-        }
-    };
-
-    /**
-     * @brief Stores the current zoom and pan offsets. While panning, panState stores the last mouse cursor position.
-     */
-    struct PanZoomState {
-        float zoomFactor = 0.f;
-        float panX       = 0.f;
-        float panY       = 0.f;
-        bool isChanged = false;
-
-        boost::optional<CurrentPanState> panState;
-    };
 
     QOpenGLDebugLogger m_openGLLogger;
 
@@ -87,7 +65,7 @@ private Q_SLOTS:
     /**
      * @brief Pan/Zoom state variables.
      */
-    PanZoomState m_panZoomState;
+    BioTracker::Core::PanZoomState m_panZoomState;
 
     /**
      * @brief Ratio of widget size and image size
@@ -132,8 +110,6 @@ private Q_SLOTS:
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
     void wheelEvent(QWheelEvent *e) override;
-
-    void directPaint(const size_t w, const size_t h, const bool fitToWindow);
 private Q_SLOTS:
     void firstPaint();
 };

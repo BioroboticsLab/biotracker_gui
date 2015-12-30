@@ -12,6 +12,8 @@
 #include <GL/glu.h>
 #endif
 
+#include <biotracker/util/ScreenHelper.h>
+
 namespace BioTracker {
 namespace Gui {
 
@@ -25,13 +27,14 @@ VideoView::VideoView(QWidget *parent, Core::BioTrackerApp &biotracker)
     , m_view(TrackingAlgorithm::OriginalView)
     , m_painter()
     , m_firstAttempt(true) {
-    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    /*QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     setSizePolicy(sizePolicy);
 
     QSurfaceFormat format = QSurfaceFormat::defaultFormat();
     format.setSamples(94);
     this->setFormat(format);
-
+    */
 }
 
 void VideoView::setMode(const VideoView::Mode mode) {
@@ -52,8 +55,7 @@ void VideoView::setMode(const VideoView::Mode mode) {
 void VideoView::fitToWindow() {
     makeCurrent();
     // reset PanZoomState
-    m_panZoomState = PanZoomState();
-    directPaint(width(), height(), true);
+    m_panZoomState = BioTracker::Core::PanZoomState();
     update();
 }
 
@@ -72,10 +74,6 @@ void VideoView::handleLoggedMessage(const QOpenGLDebugMessage &debugMessage) {
 }
 
 void VideoView::initializeGL() {
-
-    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
-    f->glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-
     m_biotracker.initializeOpenGL(context(), this->getTexture());
 }
 
@@ -89,16 +87,24 @@ void VideoView::resizeGL(int w, int h) {
 
 void VideoView::paintGL()
 {
+    const size_t width = this->width();
+    const size_t height = this->height();
+
+    const int imageCols = m_texture.getImage().cols;
+    const int imageRows = m_texture.getImage().rows;
+
+    // calculate ratio of screen to displayed image
+    const float imgRatio    = static_cast<float>(imageCols) / imageRows;
+    const float windowRatio = static_cast<float>(width) / height;
+
+    if (windowRatio < imgRatio) {
+        m_screenPicRatio = imageRows / (width / imgRatio);
+    } else {
+        m_screenPicRatio = imageCols / (height * imgRatio);
+    }
+
     QPainter painter(this);
-    painter.beginNativePainting();
-
-    // actual opengl stuff
-    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
-    f->glClear(GL_COLOR_BUFFER_BIT);
-
-    painter.endNativePainting();
-
-    m_biotracker.paint(*this, painter, m_view);
+    m_biotracker.paint(width, height, painter, m_panZoomState, m_view);
 
     painter.setPen(QColor(255, 0, 0));
     painter.drawRect(QRect(10, 20, 50, 60));
@@ -114,64 +120,6 @@ void VideoView::firstPaint() {
     } else {
         this->resize(this->width() - 1, this->height());
     }
-}
-
-void VideoView::directPaint(const size_t w, const size_t h, const bool fitToWindow)
-{
-   return;
-   makeCurrent();
-   if (w == 0 || h == 0) {
-       return;
-   }
-
-   glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_ACCUM_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
-
-   int width = w;
-   int height = h;
-
-   const int imageCols = m_texture.getImage().cols;
-   const int imageRows = m_texture.getImage().rows;
-
-   // calculate ratio of screen to displayed image
-   const float imgRatio    = static_cast<float>(imageCols) / imageRows;
-   const float windowRatio = static_cast<float>(width) / height;
-
-   // create viewport with coordinates matching picture size in pixels
-   glViewport(0, 0, width, height);
-   glMatrixMode(GL_PROJECTION);
-   glLoadIdentity();
-
-   if (fitToWindow) {
-       if (windowRatio < imgRatio) {
-           m_panZoomState.panY = -((height - (width / imgRatio)) / 2) *
-               (m_screenPicRatio + m_panZoomState.zoomFactor);
-           m_panZoomState.panX = 0;
-       } else {
-           m_panZoomState.panX = - ((width - (height * imgRatio)) / 2) *
-               (m_screenPicRatio + m_panZoomState.zoomFactor);
-           m_panZoomState.panY = 0;
-       }
-   } else {
-       if (windowRatio < imgRatio) {
-           m_screenPicRatio = imageRows / (width / imgRatio);
-       } else {
-           m_screenPicRatio = imageCols / (height * imgRatio);
-       }
-   }
-
-   width = static_cast<int>(width * (m_screenPicRatio +
-                                     m_panZoomState.zoomFactor));
-   height = static_cast<int>(height *(m_screenPicRatio +
-                                      m_panZoomState.zoomFactor));
-
-
-   const float left   = m_panZoomState.panX;
-   const float top    = m_panZoomState.panY;
-   const float right  = left + width;
-   const float bottom = top + height;
-
-   glOrtho(left, right, bottom, top, 0.0, 1.0);
-   glMatrixMode(GL_MODELVIEW);
 }
 
 QPoint VideoView::unprojectScreenPos(QPoint mouseCoords) {
@@ -224,18 +172,24 @@ void VideoView::mouseMoveEvent(QMouseEvent *e) {
 
     switch (m_currentMode) {
         case Mode::PANZOOM: {
+
+            QPoint stuff = Core::ScreenHelper::screenToImageCoords(
+                m_panZoomState,
+                m_texture.getImage().cols,
+                m_texture.getImage().rows,
+                width(),
+                height(),
+                QPoint(0,0));
+
             if (m_panZoomState.panState) {
                 const QPointF delta = e->localPos() - (*m_panZoomState.panState).lastPos;
                 (*m_panZoomState.panState).lastPos = e->localPos();
 
                 m_panZoomState.isChanged = true;
-                m_panZoomState.panX -= static_cast<float>(delta.x() * (m_screenPicRatio +
-                                       m_panZoomState.zoomFactor));
-                m_panZoomState.panY -= static_cast<float>(delta.y() * (m_screenPicRatio +
-                                       m_panZoomState.zoomFactor));
-
-                resizeGL(this->width(), this->height());
+                m_panZoomState.panX -= static_cast<float>(delta.x());
+                m_panZoomState.panY -= static_cast<float>(delta.y());
                 update();
+            } else {
             }
             break;
         }
@@ -260,7 +214,7 @@ void VideoView::mousePressEvent(QMouseEvent *e) {
         case Mode::PANZOOM: {
             if (QApplication::keyboardModifiers() == Qt::NoModifier) {
                 m_panZoomState.isChanged = true;
-                m_panZoomState.panState = CurrentPanState(e->localPos());
+                m_panZoomState.panState = BioTracker::Core::CurrentPanState(e->localPos());
                 setCursor(Qt::ClosedHandCursor);
             }
             if (e->button() == Qt::LeftButton && e->type() == QEvent::MouseButtonDblClick) {
@@ -309,9 +263,10 @@ void VideoView::wheelEvent(QWheelEvent *e) {
     // The maximum zoom is defined such that one image pixel can never become bigger than the widget size. The zoom
     // step size is calculated based on the ratio of widget size and image size and decays exponentially when zooming
     // in.
-    float step = 0.0005f * m_screenPicRatio;
+    //float step = 0.0005f * m_screenPicRatio;
+    float step = 1;
     if ((m_panZoomState.zoomFactor / m_screenPicRatio) < 0.f) {
-        step *= 1.f + (m_panZoomState.zoomFactor / m_screenPicRatio);
+        //step *= 1.f + (m_panZoomState.zoomFactor / m_screenPicRatio);
     }
 
     switch (m_currentMode) {
@@ -321,20 +276,32 @@ void VideoView::wheelEvent(QWheelEvent *e) {
                 const int numDegrees  = e->delta();
                 const float deltaZoom = step * numDegrees;
 
-                m_panZoomState.zoomFactor -= deltaZoom;
+                const float oldZoomFactor = 1 + m_panZoomState.zoomFactor;
+
+                QPoint imPos = BioTracker::Core::ScreenHelper::screenToImageCoords(
+                    m_panZoomState,
+                    m_texture.getImage().cols, m_texture.getImage().rows,
+                    this->width(), this->height(),
+                    e->pos()
+                );
+
+                m_panZoomState.zoomFactor -= deltaZoom/1200;
                 m_panZoomState.isChanged = true;
 
-                // offset of mouse cursor from widget center in proportion to widget size
-                const float propX = width() / 2.f - static_cast<float>(pos.x());
-                const float propY = height() / 2.f - static_cast<float>(pos.y());
+                const float delta_zoom = oldZoomFactor - m_panZoomState.zoomFactor;
 
-                // zoom to center
-                m_panZoomState.panX += (deltaZoom * width()) / 2;
-                m_panZoomState.panY += (deltaZoom * height()) / 2;
 
-                // adjust for cursor position
-                m_panZoomState.panX -= (deltaZoom * propX);
-                m_panZoomState.panY -= (deltaZoom * propY);
+                float propX = -30 * delta_zoom;
+                float propY = 0;
+
+                float zoom = 1 + m_panZoomState.zoomFactor;
+
+                // reset to non-zoomed coordinates
+                const float oldPanX = m_panZoomState.panX / oldZoomFactor;
+                const float oldPanY = m_panZoomState.panY / oldZoomFactor;
+
+                m_panZoomState.panX = (oldPanX - propX) * zoom;
+                m_panZoomState.panY = (oldPanY - propY) * zoom;
 
                 resizeGL(this->width(), this->height());
                 update();

@@ -10,7 +10,6 @@
 #include "OpenCameraDialog.h"
 #include "VideoView.h"
 #include "biotracker/util/QtRaiiWrapper.hpp"
-#include "biotracker/util/QOpenGLContextWrapper.h"
 #include "biotracker/util/stringTools.h"
 
 namespace BioTracker {
