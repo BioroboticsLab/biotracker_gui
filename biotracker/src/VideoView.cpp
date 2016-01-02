@@ -28,13 +28,6 @@ VideoView::VideoView(QWidget *parent, Core::BioTrackerApp &biotracker)
     , m_painter()
     , m_firstAttempt(true) {
 
-    /*QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    setSizePolicy(sizePolicy);
-
-    QSurfaceFormat format = QSurfaceFormat::defaultFormat();
-    format.setSamples(94);
-    this->setFormat(format);
-    */
 }
 
 void VideoView::setMode(const VideoView::Mode mode) {
@@ -77,14 +70,6 @@ void VideoView::initializeGL() {
     m_biotracker.initializeOpenGL(context(), this->getTexture());
 }
 
-void VideoView::resizeGL(int w, int h) {
-
-    //m_projection.setToIdentity();
-    //m_projection.perspective(45.0f, w / float(h), 0.01f, 100.0f);
-
-
-}
-
 void VideoView::paintGL()
 {
     const size_t width = this->width();
@@ -124,42 +109,12 @@ void VideoView::firstPaint() {
 
 QPoint VideoView::unprojectScreenPos(QPoint mouseCoords) {
     // variables required to map window coordinates to picture coordinates
-    GLint viewport[4];
-    GLdouble modelview[16];
-    GLdouble projection[16];
-    GLdouble posX, posY, posZ;
-    QPoint imageCoord;
-
-    glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
-    glGetDoublev(GL_PROJECTION_MATRIX, projection);
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    gluUnProject(mouseCoords.x(), viewport[3] - mouseCoords.y(), 0, modelview,
-                 projection, viewport, &posX, &posY, &posZ);
-    imageCoord.setX(static_cast<int>((m_texture.getImage().cols / 2) - posX *
-                                     (m_texture.getImage().cols / 2)));
-    imageCoord.setY(static_cast<int>((m_texture.getImage().rows / 2) - posY *
-                                     (m_texture.getImage().rows / 2)));
-
-    return imageCoord;
-}
-
-QPoint VideoView::projectPicturePos(QPoint imageCoords) {
-    //variables required to map picture coordinates to window coordinates
-    GLint viewport[4];
-    GLdouble modelview[16];
-    GLdouble projection[16];
-    GLdouble posX, posY, posZ;
-    QPoint windowCoord;
-
-    glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
-    glGetDoublev(GL_PROJECTION_MATRIX, projection);
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    gluProject(imageCoords.x(), imageCoords.y() , 0, modelview, projection,
-               viewport, &posX, &posY, &posZ);
-    windowCoord.setX(static_cast<int>(posX));
-    windowCoord.setY(-(static_cast<int>(posY - viewport[3])));
-
-    return windowCoord;
+    return BioTracker::Core::ScreenHelper::screenToImageCoords(
+        m_panZoomState,
+        m_texture.getImage().cols, m_texture.getImage().rows,
+        width(), height(),
+        mouseCoords
+    );
 }
 
 void VideoView::keyPressEvent(QKeyEvent *e) {
@@ -253,7 +208,7 @@ void VideoView::wheelEvent(QWheelEvent *e) {
         case Mode::PANZOOM: {
             if (e->orientation() == Qt::Vertical) {
                 const int numDegrees  = e->delta();
-                const float deltaZoom = step * numDegrees;
+                const float deltaZoom = numDegrees;
                 m_panZoomState = BioTracker::Core::ScreenHelper::zoomTo(
                     m_panZoomState,
                     m_texture.getImage().cols, m_texture.getImage().rows,
@@ -268,7 +223,7 @@ void VideoView::wheelEvent(QWheelEvent *e) {
         }
         case Mode::INTERACTION: {
             e->accept();
-            QPoint p  = unprojectScreenPos(e->pos());
+            const QPoint p  = unprojectScreenPos(e->pos());
             const QPointF localPos(p);
             QWheelEvent modifiedEvent(e->pos(),localPos,e->pixelDelta(),e->angleDelta(),e->delta(),e->orientation(),e->buttons(),e->modifiers());
             QCoreApplication::sendEvent(QApplication::activeWindow(), &modifiedEvent);

@@ -88,7 +88,6 @@ private Q_SLOTS:
     bool m_firstAttempt;
 
     void initializeGL() override;
-    void resizeGL(int w, int h) override;
     void paintGL();
 
     /**
@@ -97,13 +96,6 @@ private Q_SLOTS:
     * @return coordinates relative to image
     */
     QPoint unprojectScreenPos(QPoint mouseCoords);
-
-    /**
-     * @brief projectPicturePos
-     * @param imageCoords coordinates relative to image
-     * @return coordinates relative to window
-     */
-    QPoint projectPicturePos(QPoint imageCoords);
 
     void keyPressEvent(QKeyEvent *e) override;
     void mouseMoveEvent(QMouseEvent *e) override;
