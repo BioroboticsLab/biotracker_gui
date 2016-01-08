@@ -1,8 +1,5 @@
 #include "../VideoView.h"
 
-// TODO
-// check if m_texture is nullptr
-
 // OS X puts the headers in a different location in the include path than
 // Windows and Linux, so we need to distinguish between OS X and the other
 // systems.
@@ -22,7 +19,6 @@ VideoView::VideoView(QWidget *parent, Core::BioTrackerApp &biotracker)
     , m_openGLLogger(this)
     , m_currentMode(Mode::INTERACTION)
     , m_screenPicRatio(0)
-    , m_texture(this)
     , m_biotracker(biotracker)
     , m_view(TrackingAlgorithm::OriginalView)
     , m_painter()
@@ -56,17 +52,16 @@ void VideoView::handleLoggedMessage(const QOpenGLDebugMessage &debugMessage) {
     std::cout << debugMessage.message().toStdString() << std::endl;
 }
 
-void VideoView::initializeGL() {
-    m_biotracker.initializeOpenGL(context(), this->getTexture());
-}
-
 void VideoView::paintGL()
 {
+    BioTracker::Core::TextureObject const& texture =
+            m_biotracker.getTrackingThread().getTexture();
+
     const size_t width = this->width();
     const size_t height = this->height();
 
-    const int imageCols = m_texture.getImage().cols;
-    const int imageRows = m_texture.getImage().rows;
+    const int imageCols = texture.width();
+    const int imageRows = texture.height();
 
     // calculate ratio of screen to displayed image
     const float imgRatio    = static_cast<float>(imageCols) / imageRows;
@@ -80,16 +75,16 @@ void VideoView::paintGL()
 
     QPainter painter(this);
     m_biotracker.paint(width, height, painter, m_panZoomState, m_view);
-    painter.setPen(QColor(255, 0, 0));
-    painter.drawRect(QRect(10, 20, 50, 60));
-
 }
 
 QPoint VideoView::unprojectScreenPos(QPoint mouseCoords) {
+    BioTracker::Core::TextureObject const& texture =
+            m_biotracker.getTrackingThread().getTexture();
+
     // variables required to map window coordinates to picture coordinates
     return BioTracker::Core::ScreenHelper::screenToImageCoords(
         m_panZoomState,
-        m_texture.getImage().cols, m_texture.getImage().rows,
+        texture.width(), texture.height(),
         width(), height(),
         mouseCoords
     );
@@ -182,6 +177,9 @@ void VideoView::mouseReleaseEvent(QMouseEvent *e) {
 }
 
 void VideoView::wheelEvent(QWheelEvent *e) {
+    BioTracker::Core::TextureObject const& texture =
+            m_biotracker.getTrackingThread().getTexture();
+
     switch (m_currentMode) {
         case Mode::PANZOOM: {
             if (e->orientation() == Qt::Vertical) {
@@ -189,7 +187,7 @@ void VideoView::wheelEvent(QWheelEvent *e) {
                 const float deltaZoom = numDegrees;
                 m_panZoomState = BioTracker::Core::ScreenHelper::zoomTo(
                     m_panZoomState,
-                    m_texture.getImage().cols, m_texture.getImage().rows,
+                    texture.width(), texture.height(),
                     this->width(), this->height(),
                     deltaZoom,
                     e->pos()

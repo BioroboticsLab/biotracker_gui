@@ -34,14 +34,11 @@ class VideoView : public QOpenGLWidget, protected QOpenGLFunctions {
         return m_currentMode;
     }
 
-    Core::TextureObject &getTexture() {
-        return m_texture;
-    }
-
     bool isZoomed();
 
     void setView(TrackingAlgorithm::View v) {
         m_view = v;
+        update();
     }
 
 public Q_SLOTS:
@@ -71,11 +68,6 @@ private Q_SLOTS:
      */
     float m_screenPicRatio;
 
-    /**
-     * @brief Wrapper for the OpenGL texture. Also contains the original image as opencv matrix.
-     */
-    Core::TextureObject m_texture;
-
     Core::BioTrackerApp &m_biotracker;
 
     TrackingAlgorithm::View m_view;
@@ -86,7 +78,6 @@ private Q_SLOTS:
     QPainter m_painter;
     bool m_firstAttempt;
 
-    void initializeGL() override;
     void paintGL();
 
     /**
