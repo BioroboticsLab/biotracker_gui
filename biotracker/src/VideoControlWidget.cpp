@@ -230,11 +230,6 @@ void VideoControlWidget::viewChanged(QString n) {
 }
 
 void repaintVideoView(VideoView *videoView) {
-    if (!videoView->isZoomed()) {
-        // TODO: fix this ugly hack
-        videoView->resize(videoView->width() + 1, videoView->height());
-        videoView->resize(videoView->width() - 1, videoView->height());
-    }
     videoView->update();
 }
 
