@@ -52,16 +52,6 @@ void VideoView::fitToWindow() {
     update();
 }
 
-/**
-  This attempts to fix a nasty bug that the very first image is not set
-  correctly.
-  TODO: fix this bug CORRECTLY!
- * @brief VideoView::initialPaint
- */
-void VideoView::initialPaint() {
-    QTimer::singleShot(20, this, SLOT(firstPaint()));
-}
-
 void VideoView::handleLoggedMessage(const QOpenGLDebugMessage &debugMessage) {
     std::cout << debugMessage.message().toStdString() << std::endl;
 }
@@ -90,21 +80,9 @@ void VideoView::paintGL()
 
     QPainter painter(this);
     m_biotracker.paint(width, height, painter, m_panZoomState, m_view);
-
     painter.setPen(QColor(255, 0, 0));
     painter.drawRect(QRect(10, 20, 50, 60));
 
-}
-
-void VideoView::firstPaint() {
-
-    if (m_firstAttempt) {
-        m_firstAttempt = false;
-        this->resize(this->width() + 1, this->height());
-        QTimer::singleShot(20, this, SLOT(firstPaint()));
-    } else {
-        this->resize(this->width() - 1, this->height());
-    }
 }
 
 QPoint VideoView::unprojectScreenPos(QPoint mouseCoords) {
