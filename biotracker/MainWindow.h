@@ -66,13 +66,6 @@ class MainWindow : public QMainWindow {
     OpenCameraDialog m_openCameraDialog;
     QVBoxLayout m_tools;
 
-    /**
-     * @brief lastToolsWidget
-     * We need to store a reference to the last used widget so we can
-     * remove it upon selecting a new algorithm
-     */
-    std::shared_ptr<QWidget> m_lastToolsWidget;
-
     void initalizeVideoView(Core::BioTrackerApp &biotracker);
 };
 

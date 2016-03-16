@@ -24,11 +24,7 @@ void MainWindow::frameCalculated(const size_t, const std::string filename, const
 }
 
 void MainWindow::trackerSelected(std::shared_ptr<TrackingAlgorithm> tracker) {
-    if (m_lastToolsWidget) {
-        m_tools.removeWidget(m_lastToolsWidget.get());
-    }
-    m_lastToolsWidget = tracker.get()->getToolsWidget();
-    m_tools.addWidget(m_lastToolsWidget.get());
+    m_tools.addWidget(tracker->getToolsWidget());
     m_ui.groupBox_tools->repaint();
 }
 
