@@ -279,7 +279,7 @@ void VideoControlWidget::switchPanZoomMode() {
 }
 
 void VideoControlWidget::frameCalculated(const size_t frameNumber,
-        const std::string filename, const double currentFps) {
+        const std::string, const double currentFps) {
 
     const bool hasNext = frameNumber < m_bioTracker.getNumFrames() - 1;
 
