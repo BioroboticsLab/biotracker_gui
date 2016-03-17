@@ -36,7 +36,7 @@ class VideoView : public QOpenGLWidget, protected QOpenGLFunctions {
 
     bool isZoomed();
 
-    void setView(TrackingAlgorithm::View v) {
+    void setView(Core::TrackingAlgorithm::View v) {
         m_view = v;
         update();
     }
@@ -70,7 +70,7 @@ private Q_SLOTS:
 
     Core::BioTrackerApp &m_biotracker;
 
-    TrackingAlgorithm::View m_view;
+    Core::TrackingAlgorithm::View m_view;
 
     /**
      * @brief m_painter

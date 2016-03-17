@@ -68,7 +68,7 @@ void VideoControlWidget::updateWidgets() {
 void VideoControlWidget::initShortcuts() {
     const QString shortcutPanKey = QString::fromStdString(
                                        m_bioTracker.getSettings().getValueOrDefault<std::string>
-                                       (GUIPARAM::SHORTCUT_ZOOM,"Z"));
+                                       (GuiParam::SHORTCUT_ZOOM,"Z"));
     const QShortcut *shortcutPan = new QShortcut(QKeySequence(shortcutPanKey),
             this);
     QObject::connect(shortcutPan, &QShortcut::activated, m_ui.button_panZoom,
@@ -76,7 +76,7 @@ void VideoControlWidget::initShortcuts() {
 
     const QString shortcutPlayKey = QString::fromStdString(
                                         m_bioTracker.getSettings().getValueOrDefault<std::string>
-                                        (GUIPARAM::SHORTCUT_PLAY,"Space"));
+                                        (GuiParam::SHORTCUT_PLAY,"Space"));
     const QShortcut *shortcutPlay = new QShortcut(QKeySequence(shortcutPlayKey),
             this);
     QObject::connect(shortcutPlay, &QShortcut::activated, m_ui.button_playPause,
@@ -84,7 +84,7 @@ void VideoControlWidget::initShortcuts() {
 
     const QString shortcutNextKey = QString::fromStdString(
                                         m_bioTracker.getSettings().getValueOrDefault<std::string>
-                                        (GUIPARAM::SHORTCUT_NEXT,"Right"));
+                                        (GuiParam::SHORTCUT_NEXT,"Right"));
     const QShortcut *shortcutNext = new QShortcut(QKeySequence(shortcutNextKey),
             this);
     QObject::connect(shortcutNext, &QShortcut::activated, m_ui.button_nextFrame,
@@ -92,7 +92,7 @@ void VideoControlWidget::initShortcuts() {
 
     const QString shortcutPrevKey = QString::fromStdString(
                                         m_bioTracker.getSettings().getValueOrDefault<std::string>
-                                        (GUIPARAM::SHORTCUT_PREV,"Left"));
+                                        (GuiParam::SHORTCUT_PREV,"Left"));
     const QShortcut *shortcutPrev = new QShortcut(QKeySequence(shortcutPrevKey),
             this);
     QObject::connect(shortcutPrev, &QShortcut::activated, m_ui.button_previousFrame,
@@ -222,7 +222,7 @@ void VideoControlWidget::speedSliderValueChanged(int speed) {
 }
 
 void VideoControlWidget::viewChanged(QString n) {
-    auto view = TrackingAlgorithm::OriginalView;
+    auto view = Core::TrackingAlgorithm::OriginalView;
     if (n != "Original") {
         view.name = n.toUtf8().constData();
     }
@@ -238,7 +238,7 @@ void VideoControlWidget::onRequestRepaint()
     repaintVideoView(m_videoView);
 }
 
-void VideoControlWidget::registerViews(const std::vector<TrackingAlgorithm::View> views) {
+void VideoControlWidget::registerViews(const std::vector<Core::TrackingAlgorithm::View> views) {
     m_ui.comboBoxSelectedView->clear();
     m_ui.comboBoxSelectedView->addItem("Original");
     for (auto view : views) {

@@ -25,7 +25,7 @@ class NotificationWidget : public QWidget {
      * @brief notify
      *      Status messages for the user interface
      */
-    void notify(const std::string &message, const MSGS::MTYPE type);
+    void notify(const std::string &message, const Core::MessageType type);
 
 
 

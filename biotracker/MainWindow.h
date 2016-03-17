@@ -55,7 +55,7 @@ class MainWindow : public QMainWindow {
      * gets called whenever a new tracker is selected
      * @param tracker
      */
-    void trackerSelected(std::shared_ptr<TrackingAlgorithm> tracker);
+    void trackerSelected(std::shared_ptr<Core::TrackingAlgorithm> tracker);
 
   private:
     MainWindowUi m_ui;

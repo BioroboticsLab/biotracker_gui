@@ -20,10 +20,10 @@ void MainWindow::initalizeVideoView(Core::BioTrackerApp &biotracker) {
 }
 
 void MainWindow::frameCalculated(const size_t, const std::string filename, const double) {
-    setWindowTitle("BioTracker [" + QString::fromStdString(stem_filename(filename)) + "]");
+    setWindowTitle("BioTracker [" + QString::fromStdString(Util::stem_filename(filename)) + "]");
 }
 
-void MainWindow::trackerSelected(std::shared_ptr<TrackingAlgorithm> tracker) {
+void MainWindow::trackerSelected(std::shared_ptr<Core::TrackingAlgorithm> tracker) {
     m_tools.addWidget(tracker->getToolsWidget());
     m_ui.groupBox_tools->repaint();
 }

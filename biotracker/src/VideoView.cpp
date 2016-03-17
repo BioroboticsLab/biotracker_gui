@@ -20,7 +20,7 @@ VideoView::VideoView(QWidget *parent, Core::BioTrackerApp &biotracker)
     , m_currentMode(Mode::INTERACTION)
     , m_screenPicRatio(0)
     , m_biotracker(biotracker)
-    , m_view(TrackingAlgorithm::OriginalView)
+    , m_view(Core::TrackingAlgorithm::OriginalView)
     , m_painter()
     , m_firstAttempt(true) {
 

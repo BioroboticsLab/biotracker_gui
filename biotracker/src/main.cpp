@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
 
     // meta types
     qRegisterMetaType<cv::Mat>("cv::Mat");
-    qRegisterMetaType<MSGS::MTYPE>("MSGS::MTYPE");
+    qRegisterMetaType<BioTracker::Core::Messages::MessageType>("BioTracker::Core::Messages::MessageType");
     qRegisterMetaType<std::string>("std::string");
     qRegisterMetaType<std::size_t>("std::size_t");
     qRegisterMetaType<size_t>("size_t");
@@ -31,8 +31,8 @@ int main(int argc, char *argv[]) {
         BioTracker::Gui::Gui w;
         return app.exec();
     } else {
-        static const std::string title = MSGS::SYSTEM::APPLICATION_CANNOT_START;
-        static const std::string msg   = MSGS::SYSTEM::NO_OPENGL;
+        static const std::string title = BioTracker::Core::Messages::System::APPLICATION_CANNOT_START;
+        static const std::string msg   = BioTracker::Core::Messages::System::NO_OPENGL;
         QMessageBox::critical(nullptr,
                               QString::fromStdString(title),
                               QString::fromStdString(msg));
