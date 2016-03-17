@@ -34,7 +34,7 @@ class AlgorithmSelectionWidget : public QWidget {
     void initConnects();
 
   private Q_SLOTS:
-    void trackingAlgorithmSelected(const QString& name);
+    void trackingAlgorithmSelected(const QString &name);
 };
 
 }

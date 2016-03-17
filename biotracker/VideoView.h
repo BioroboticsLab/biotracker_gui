@@ -41,11 +41,11 @@ class VideoView : public QOpenGLWidget, protected QOpenGLFunctions {
         update();
     }
 
-public Q_SLOTS:
+  public Q_SLOTS:
     void setMode(const Mode mode);
     void fitToWindow();
 
-private Q_SLOTS:
+  private Q_SLOTS:
     void handleLoggedMessage(const QOpenGLDebugMessage &debugMessage);
 
   private:

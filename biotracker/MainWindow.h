@@ -48,7 +48,7 @@ class MainWindow : public QMainWindow {
      *      handles the showing of filenames in statusbar
      */
     void frameCalculated(const size_t frameNumber,
-                    const std::string filename, const double currentFps);
+                         const std::string filename, const double currentFps);
 
     /**
      * @brief trackerSelected
@@ -67,7 +67,7 @@ class MainWindow : public QMainWindow {
 
     void initalizeVideoView(Core::BioTrackerApp &biotracker);
 
-    void closeEvent(QCloseEvent* event) override;
+    void closeEvent(QCloseEvent *event) override;
 };
 
 

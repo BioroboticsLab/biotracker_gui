@@ -17,8 +17,7 @@ VideoControlWidget::VideoControlWidget(QWidget *parent,
     , m_ui(parent)
     , m_bioTracker(facade)
     , m_videoView(videoView)
-    , m_isPanZoomMode(false)
-{
+    , m_isPanZoomMode(false) {
     m_iconPause.addFile(QStringLiteral(":/BioTracker/resources/pause-sign.png"),
                         QSize(), QIcon::Normal, QIcon::Off);
     m_iconPlay.addFile(QStringLiteral(":/BioTracker/resources/arrow-forward1.png"),
@@ -125,8 +124,9 @@ void VideoControlWidget::initConnects() {
     QObject::connect(m_ui.sld_speed, &QSlider::valueChanged, this,
                      &VideoControlWidget::speedSliderValueChanged);
 
-    QObject::connect(m_ui.comboBoxSelectedView, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged),
-        this, &VideoControlWidget::viewChanged);
+    QObject::connect(m_ui.comboBoxSelectedView,
+                     static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged),
+                     this, &VideoControlWidget::viewChanged);
 
     QObject::connect(&m_bioTracker, &Core::BioTrackerApp::registerViews, this,
                      &VideoControlWidget::registerViews);
@@ -233,8 +233,7 @@ void repaintVideoView(VideoView *videoView) {
     videoView->update();
 }
 
-void VideoControlWidget::onRequestRepaint()
-{
+void VideoControlWidget::onRequestRepaint() {
     repaintVideoView(m_videoView);
 }
 
@@ -260,8 +259,8 @@ void VideoControlWidget::takeScreenshot() {
     filename.append("/Screenshot_").append(QString::fromStdString(dateTime)).append(".png");
     std::cout << QDir::homePath().append(filename).toStdString() << std::endl;
     QString filepath = QFileDialog::getSaveFileName(this, tr("Save File"),
-                                                    QDir::homePath().append(filename),
-                                                    tr("Images (*.png)"));
+                       QDir::homePath().append(filename),
+                       tr("Images (*.png)"));
 
     if (filepath.count()) {
         m_bioTracker.getTrackingThread().getTexture().get().save(filepath);

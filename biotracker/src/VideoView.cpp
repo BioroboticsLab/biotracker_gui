@@ -52,10 +52,9 @@ void VideoView::handleLoggedMessage(const QOpenGLDebugMessage &debugMessage) {
     std::cout << debugMessage.message().toStdString() << std::endl;
 }
 
-void VideoView::paintGL()
-{
-    BioTracker::Core::TextureObject const& texture =
-            m_biotracker.getTrackingThread().getTexture();
+void VideoView::paintGL() {
+    BioTracker::Core::TextureObject const &texture =
+        m_biotracker.getTrackingThread().getTexture();
 
     const size_t width = this->width();
     const size_t height = this->height();
@@ -78,16 +77,16 @@ void VideoView::paintGL()
 }
 
 QPoint VideoView::unprojectScreenPos(QPoint mouseCoords) {
-    BioTracker::Core::TextureObject const& texture =
-            m_biotracker.getTrackingThread().getTexture();
+    BioTracker::Core::TextureObject const &texture =
+        m_biotracker.getTrackingThread().getTexture();
 
     // variables required to map window coordinates to picture coordinates
     return BioTracker::Core::ScreenHelper::screenToImageCoords(
-        m_panZoomState,
-        texture.width(), texture.height(),
-        width(), height(),
-        mouseCoords
-    );
+               m_panZoomState,
+               texture.width(), texture.height(),
+               width(), height(),
+               mouseCoords
+           );
 }
 
 void VideoView::keyPressEvent(QKeyEvent *e) {
@@ -99,117 +98,118 @@ void VideoView::keyPressEvent(QKeyEvent *e) {
 void VideoView::mouseMoveEvent(QMouseEvent *e) {
 
     switch (m_currentMode) {
-        case Mode::PANZOOM: {
-            if (m_panZoomState.panState) {
-                const QPointF delta = e->localPos() - (*m_panZoomState.panState).lastPos;
-                (*m_panZoomState.panState).lastPos = e->localPos();
-                m_panZoomState.isChanged = true;
-                m_panZoomState.panX -= static_cast<float>(delta.x());
-                m_panZoomState.panY -= static_cast<float>(delta.y());
-                update();
-            }
-            break;
+    case Mode::PANZOOM: {
+        if (m_panZoomState.panState) {
+            const QPointF delta = e->localPos() - (*m_panZoomState.panState).lastPos;
+            (*m_panZoomState.panState).lastPos = e->localPos();
+            m_panZoomState.isChanged = true;
+            m_panZoomState.panX -= static_cast<float>(delta.x());
+            m_panZoomState.panY -= static_cast<float>(delta.y());
+            update();
         }
-        case Mode::INTERACTION: {
-            e->accept();
-            QPoint p  = unprojectScreenPos(e->pos());
-            const QPointF localPos(p);
-            QMouseEvent modifiedEvent(e->type(),localPos,e->screenPos(),e->button(),e->buttons(),e->modifiers());
-            m_biotracker.mouseEvent(&modifiedEvent);
-            break;
-        }
-        default: {
-            assert(false);
-            break;
-        }
+        break;
+    }
+    case Mode::INTERACTION: {
+        e->accept();
+        QPoint p  = unprojectScreenPos(e->pos());
+        const QPointF localPos(p);
+        QMouseEvent modifiedEvent(e->type(),localPos,e->screenPos(),e->button(),e->buttons(),e->modifiers());
+        m_biotracker.mouseEvent(&modifiedEvent);
+        break;
+    }
+    default: {
+        assert(false);
+        break;
+    }
     }
 
 }
 
 void VideoView::mousePressEvent(QMouseEvent *e) {
     switch (m_currentMode) {
-        case Mode::PANZOOM: {
-            if (QApplication::keyboardModifiers() == Qt::NoModifier) {
-                m_panZoomState.isChanged = true;
-                m_panZoomState.panState = BioTracker::Core::CurrentPanState(e->localPos());
-                setCursor(Qt::ClosedHandCursor);
-            }
-            if (e->button() == Qt::LeftButton && e->type() == QEvent::MouseButtonDblClick) {
-                fitToWindow();
-            }
-            break;
+    case Mode::PANZOOM: {
+        if (QApplication::keyboardModifiers() == Qt::NoModifier) {
+            m_panZoomState.isChanged = true;
+            m_panZoomState.panState = BioTracker::Core::CurrentPanState(e->localPos());
+            setCursor(Qt::ClosedHandCursor);
         }
-        case Mode::INTERACTION: {
-            e->accept();
-            QPoint p  = unprojectScreenPos(e->pos());
-            const QPointF localPos(p);
-            QMouseEvent modifiedEvent(e->type(),localPos,e->screenPos(),e->button(),e->buttons(),e->modifiers());
-            m_biotracker.mouseEvent(&modifiedEvent);
-            break;
+        if (e->button() == Qt::LeftButton && e->type() == QEvent::MouseButtonDblClick) {
+            fitToWindow();
         }
-        default: {
-            assert(false);
-            break;
-        }
+        break;
+    }
+    case Mode::INTERACTION: {
+        e->accept();
+        QPoint p  = unprojectScreenPos(e->pos());
+        const QPointF localPos(p);
+        QMouseEvent modifiedEvent(e->type(),localPos,e->screenPos(),e->button(),e->buttons(),e->modifiers());
+        m_biotracker.mouseEvent(&modifiedEvent);
+        break;
+    }
+    default: {
+        assert(false);
+        break;
+    }
     }
 }
 
 void VideoView::mouseReleaseEvent(QMouseEvent *e) {
     switch (m_currentMode) {
-        case Mode::PANZOOM: {
-            setCursor(Qt::OpenHandCursor);
-            m_panZoomState.panState.reset();
-            break;
-        }
-        case Mode::INTERACTION: {
-            e->accept();
-            QPoint p  = unprojectScreenPos(e->pos());
-            const QPointF localPos(p);
-            QMouseEvent modifiedEvent(e->type(),localPos,e->screenPos(),e->button(),e->buttons(),e->modifiers());
-            m_biotracker.mouseEvent(&modifiedEvent);
-            break;
-        }
-        default: {
-            assert(false);
-            break;
-        }
+    case Mode::PANZOOM: {
+        setCursor(Qt::OpenHandCursor);
+        m_panZoomState.panState.reset();
+        break;
+    }
+    case Mode::INTERACTION: {
+        e->accept();
+        QPoint p  = unprojectScreenPos(e->pos());
+        const QPointF localPos(p);
+        QMouseEvent modifiedEvent(e->type(),localPos,e->screenPos(),e->button(),e->buttons(),e->modifiers());
+        m_biotracker.mouseEvent(&modifiedEvent);
+        break;
+    }
+    default: {
+        assert(false);
+        break;
+    }
     }
 }
 
 void VideoView::wheelEvent(QWheelEvent *e) {
-    BioTracker::Core::TextureObject const& texture =
-            m_biotracker.getTrackingThread().getTexture();
+    BioTracker::Core::TextureObject const &texture =
+        m_biotracker.getTrackingThread().getTexture();
 
     switch (m_currentMode) {
-        case Mode::PANZOOM: {
-            if (e->orientation() == Qt::Vertical) {
-                const int numDegrees  = e->delta();
-                const float deltaZoom = numDegrees;
-                m_panZoomState = BioTracker::Core::ScreenHelper::zoomTo(
-                    m_panZoomState,
-                    texture.width(), texture.height(),
-                    this->width(), this->height(),
-                    deltaZoom,
-                    e->pos()
-                );
-                update();
-                e->accept();
-            }
-            break;
-        }
-        case Mode::INTERACTION: {
+    case Mode::PANZOOM: {
+        if (e->orientation() == Qt::Vertical) {
+            const int numDegrees  = e->delta();
+            const float deltaZoom = numDegrees;
+            m_panZoomState = BioTracker::Core::ScreenHelper::zoomTo(
+                                 m_panZoomState,
+                                 texture.width(), texture.height(),
+                                 this->width(), this->height(),
+                                 deltaZoom,
+                                 e->pos()
+                             );
+            update();
             e->accept();
-            const QPoint p  = unprojectScreenPos(e->pos());
-            const QPointF localPos(p);
-            QWheelEvent modifiedEvent(e->pos(),localPos,e->pixelDelta(),e->angleDelta(),e->delta(),e->orientation(),e->buttons(),e->modifiers());
-            QCoreApplication::sendEvent(QApplication::activeWindow(), &modifiedEvent);
-            m_biotracker.mouseWheelEvent(&modifiedEvent);
-            break;
         }
-        default: {
-            assert(false);
-            break;
-        }
+        break;
+    }
+    case Mode::INTERACTION: {
+        e->accept();
+        const QPoint p  = unprojectScreenPos(e->pos());
+        const QPointF localPos(p);
+        QWheelEvent modifiedEvent(e->pos(),localPos,e->pixelDelta(),e->angleDelta(),e->delta(),e->orientation(),e->buttons(),
+                                  e->modifiers());
+        QCoreApplication::sendEvent(QApplication::activeWindow(), &modifiedEvent);
+        m_biotracker.mouseWheelEvent(&modifiedEvent);
+        break;
+    }
+    default: {
+        assert(false);
+        break;
+    }
     }
 }
 
