@@ -45,8 +45,8 @@ set(OpenCV_STATIC OFF)
 find_package(OpenCV REQUIRED)
 
 find_package(OpenGL REQUIRED)
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5OpenGL REQUIRED)
+find_package(Qt5Widgets 5.4 REQUIRED)
+find_package(Qt5OpenGL 5.4 REQUIRED)
 find_package(Threads REQUIRED)
 
 set(Boost_USE_STATIC_LIBS OFF)
