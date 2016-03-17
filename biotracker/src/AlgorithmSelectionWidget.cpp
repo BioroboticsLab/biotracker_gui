@@ -20,10 +20,12 @@ AlgorithmSelectionWidget::AlgorithmSelectionWidget(QWidget *parent,
         QComboBox::InsertPolicy::InsertAlphabetically);
 }
 
-void AlgorithmSelectionWidget::addTrackingAlgorithm(const Core::TrackerType
-        type) {
-    m_ui.cb_algorithms->addItem(QString::fromStdString(
-                                    m_biotracker.getRegistry().getStringByType().at(type)));
+void AlgorithmSelectionWidget::addTrackingAlgorithm(const Core::TrackerType type) {
+    const QString trackerName = QString::fromStdString(
+                                    m_biotracker.getRegistry().getStringByType().at(type));
+    m_ui.cb_algorithms->addItem(trackerName);
+    const int index = m_ui.cb_algorithms->findText(trackerName);
+    m_ui.cb_algorithms->setCurrentIndex(index);
 }
 
 void AlgorithmSelectionWidget::initAlgorithmList() {
