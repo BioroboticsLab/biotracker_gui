@@ -85,7 +85,7 @@
            <number>3</number>
           </property>
           <item>
-           <widget class="QGroupBox" name="trackingArea">
+           <widget class="QFrame" name="trackingArea">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
@@ -98,16 +98,22 @@
               <height>150</height>
              </size>
             </property>
-            <property name="title">
-             <string>Tracking Area </string>
-            </property>
-            <property name="flat">
-             <bool>false</bool>
-            </property>
-            <property name="checkable">
-             <bool>false</bool>
-            </property>
             <layout class="QVBoxLayout" name="verticalLayout">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
              <item>
               <layout class="QVBoxLayout" name="videoViewLayout"/>
              </item>
@@ -144,7 +150,7 @@
      <x>0</x>
      <y>0</y>
      <width>982</width>
-     <height>20</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -290,7 +296,7 @@
   </action>
   <action name="actionLoad_Tracker">
    <property name="text">
-    <string>Load Tracker...</string>
+    <string>L&amp;oad Tracker...</string>
    </property>
   </action>
   <action name="actionOpen_Camera">
