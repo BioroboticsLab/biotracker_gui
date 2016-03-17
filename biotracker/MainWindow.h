@@ -53,7 +53,6 @@ class MainWindow : public QMainWindow {
     /**
      * @brief trackerSelected
      * gets called whenever a new tracker is selected
-     * @param tracker
      */
     void trackerSelected(std::shared_ptr<Core::TrackingAlgorithm> tracker);
 
@@ -67,6 +66,8 @@ class MainWindow : public QMainWindow {
     QVBoxLayout m_tools;
 
     void initalizeVideoView(Core::BioTrackerApp &biotracker);
+
+    void closeEvent(QCloseEvent* event) override;
 };
 
 

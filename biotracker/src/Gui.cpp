@@ -20,6 +20,7 @@ Gui::Gui()
     , m_biotracker()
     , m_mainWindow(m_biotracker) {
     initConnects();
+
     m_mainWindow.show();
 }
 

@@ -78,7 +78,7 @@ private Q_SLOTS:
     QPainter m_painter;
     bool m_firstAttempt;
 
-    void paintGL();
+    void paintGL() override;
 
     /**
     * @brief unprojectScreenPos
