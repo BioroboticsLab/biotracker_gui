@@ -251,17 +251,21 @@ void VideoControlWidget::changeCurrentFrameByEdit() {
 }
 
 void VideoControlWidget::takeScreenshot() {
-    /*
-    QString filename = "";
-    const std::chrono::system_clock::time_point p = std::chrono::system_clock::now();
-    const std::time_t t = std::chrono::system_clock::to_time_t(p);
-    std::string dateTime = std::ctime(&t);
-    //ctime adds a newline to the string due to historical reasons
-    dateTime = dateTime.substr(0, dateTime.size() - 1);
-    filename.append("/screenshot_").append(QString::fromStdString(dateTime)).append(".png");
-    QString filepath = QFileDialog::getSaveFileName(this, tr("Save File"), "/home/"+filename , tr("Images (*.png)"));
-    ui.videoView->takeScreenshot(filepath);
-    */
+    QString filename;
+    const std::time_t t = std::time(nullptr);
+    const std::tm tm = *std::localtime(&t);
+    std::ostringstream ss;
+    ss << std::put_time(&tm, "%Y-%m-%d_%H-%M-%S");
+    std::string dateTime = ss.str();
+    filename.append("/Screenshot_").append(QString::fromStdString(dateTime)).append(".png");
+    std::cout << QDir::homePath().append(filename).toStdString() << std::endl;
+    QString filepath = QFileDialog::getSaveFileName(this, tr("Save File"),
+                                                    QDir::homePath().append(filename),
+                                                    tr("Images (*.png)"));
+
+    if (filepath.count()) {
+        m_bioTracker.getTrackingThread().getTexture().get().save(filepath);
+    }
 }
 
 void VideoControlWidget::switchPanZoomMode() {
