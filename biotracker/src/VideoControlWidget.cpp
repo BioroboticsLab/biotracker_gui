@@ -251,17 +251,15 @@ void VideoControlWidget::changeCurrentFrameByEdit() {
 
 void VideoControlWidget::takeScreenshot() {
     QString filename;
-    const std::time_t t = std::time(nullptr);
-    const std::tm tm = *std::localtime(&t);
-    std::ostringstream ss;
-    ss << std::put_time(&tm, "%Y-%m-%d_%H-%M-%S");
-    std::string dateTime = ss.str();
-    filename.append("/Screenshot_").append(QString::fromStdString(dateTime)).append(".png");
-    std::cout << QDir::homePath().append(filename).toStdString() << std::endl;
+    char buffer[80];
+    time_t rawtime;
+    std::time(&rawtime);
+    struct tm *timeinfo = localtime(&rawtime);
+    strftime(buffer, 80, "%d-%m-%Y_%I-%M-%S", timeinfo);
+    filename.append("/Screenshot_").append(buffer).append(".png");
     QString filepath = QFileDialog::getSaveFileName(this, tr("Save File"),
                        QDir::homePath().append(filename),
                        tr("Images (*.png)"));
-
     if (filepath.count()) {
         m_bioTracker.getTrackingThread().getTexture().get().save(filepath);
     }
