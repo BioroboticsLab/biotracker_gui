@@ -19,6 +19,7 @@ int main(int argc, char *argv[]) {
     // meta types
     qRegisterMetaType<cv::Mat>("cv::Mat");
     qRegisterMetaType<BioTracker::Core::Messages::MessageType>("BioTracker::Core::Messages::MessageType");
+    qRegisterMetaType<BioTracker::Core::Messages::MessageType>("MessageType");
     qRegisterMetaType<std::string>("std::string");
     qRegisterMetaType<std::size_t>("std::size_t");
     qRegisterMetaType<size_t>("size_t");
