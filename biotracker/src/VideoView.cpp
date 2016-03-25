@@ -23,7 +23,7 @@ VideoView::VideoView(QWidget *parent, Core::BioTrackerApp &biotracker)
     , m_view(Core::TrackingAlgorithm::OriginalView)
     , m_painter()
     , m_firstAttempt(true) {
-
+    setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 }
 
 void VideoView::setMode(const VideoView::Mode mode) {
