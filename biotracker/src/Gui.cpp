@@ -60,7 +60,7 @@ void Gui::initConnects() {
 }
 
 void Gui::browseVideo() {
-    static const QString videoFilter("Video files (*.avi *.wmv *.mp4 *.mkv)");
+    static const QString videoFilter("Video files (*.avi *.wmv *.mp4 *.mkv *.mov)");
     std::vector<boost::filesystem::path> files;
 
     const QString filename = QFileDialog::getOpenFileName(&m_mainWindow,
