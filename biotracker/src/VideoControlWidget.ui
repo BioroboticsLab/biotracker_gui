@@ -68,6 +68,9 @@
      <property name="title">
       <string>Video Controls</string>
      </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
      <layout class="QHBoxLayout" name="horizontalLayout_4">
       <property name="spacing">
        <number>3</number>

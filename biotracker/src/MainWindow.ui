@@ -180,7 +180,7 @@
    <property name="minimumSize">
     <size>
      <width>200</width>
-     <height>172</height>
+     <height>207</height>
     </size>
    </property>
    <property name="sizeIncrement">
@@ -210,19 +210,19 @@
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <property name="spacing">
-      <number>3</number>
+      <number>2</number>
      </property>
      <property name="leftMargin">
-      <number>8</number>
+      <number>3</number>
      </property>
      <property name="topMargin">
-      <number>8</number>
+      <number>3</number>
      </property>
      <property name="rightMargin">
-      <number>8</number>
+      <number>3</number>
      </property>
      <property name="bottomMargin">
-      <number>8</number>
+      <number>3</number>
      </property>
      <item>
       <widget class="QWidget" name="widget_alg" native="true">
@@ -237,7 +237,7 @@
      <item>
       <widget class="QGroupBox" name="groupBox_tools">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -245,6 +245,67 @@
        <property name="title">
         <string>Tools</string>
        </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <property name="spacing">
+         <number>3</number>
+        </property>
+        <property name="leftMargin">
+         <number>3</number>
+        </property>
+        <property name="topMargin">
+         <number>3</number>
+        </property>
+        <property name="rightMargin">
+         <number>3</number>
+        </property>
+        <property name="bottomMargin">
+         <number>3</number>
+        </property>
+        <item>
+         <widget class="QScrollArea" name="scrollArea">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Plain</enum>
+          </property>
+          <property name="lineWidth">
+           <number>0</number>
+          </property>
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarAsNeeded</enum>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="groupBoxContents">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>176</width>
+             <height>525</height>
+            </rect>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </item>
     </layout>

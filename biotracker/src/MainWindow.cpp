@@ -8,7 +8,7 @@ MainWindow::MainWindow(Core::BioTrackerApp &biotracker)
     , m_algorithmSelection(m_ui.widget_alg, biotracker)
     , m_notification(m_ui.dockWidgetNotificationContents, biotracker)
     , m_openCameraDialog(m_ui.centralWidget, biotracker)
-    , m_tools(m_ui.groupBox_tools) {
+    , m_tools(m_ui.groupBoxContents) {
     initalizeVideoView(biotracker);
 
     {

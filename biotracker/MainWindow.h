@@ -9,6 +9,7 @@
 #include "VideoControlWidget.h"
 #include "OpenCameraDialog.h"
 #include "VideoView.h"
+
 #include "biotracker/util/QtRaiiWrapper.hpp"
 #include "biotracker/util/stringTools.h"
 
