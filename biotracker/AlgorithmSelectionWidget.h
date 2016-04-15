@@ -6,8 +6,6 @@
 #include "ui_AlgorithmSelectionWidget.h"
 #include "biotracker/util/QtRaiiWrapper.hpp"
 
-class Facade;
-
 namespace BioTracker {
 namespace Gui {
 
