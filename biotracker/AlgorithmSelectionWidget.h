@@ -33,6 +33,7 @@ class AlgorithmSelectionWidget : public QWidget {
 
   private Q_SLOTS:
     void trackingAlgorithmSelected(const QString &name);
+    void enableDisableTracking(bool state);
 };
 
 }

@@ -46,10 +46,29 @@ void AlgorithmSelectionWidget::initConnects() {
                      this, &AlgorithmSelectionWidget::addTrackingAlgorithm);
     QObject::connect(m_ui.cb_algorithms, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged),
                      this, &AlgorithmSelectionWidget::trackingAlgorithmSelected);
+    QObject::connect(m_ui.chk_enableTracking, &QCheckBox::toggled,
+                     this, &AlgorithmSelectionWidget::enableDisableTracking);
 }
 
 void AlgorithmSelectionWidget::trackingAlgorithmSelected(const QString &name) {
     m_biotracker.setTrackingAlgorithm(name.toStdString());
+
+    // check if we have "any" tracking or not
+    auto noTrackingStr = QString::fromStdString(m_biotracker.getRegistry().getStringByType().at(Core::NoTracking));
+    if (name.compare(noTrackingStr) == 0) {
+        m_ui.chk_enableTracking->setChecked(true);
+        m_ui.chk_enableTracking->setEnabled(false);
+    } else {
+        m_ui.chk_enableTracking->setEnabled(true);
+    }
+}
+
+void AlgorithmSelectionWidget::enableDisableTracking(bool checked) {
+    if (checked) {
+        m_biotracker.enableTracking();
+    } else {
+        m_biotracker.disableTracking();
+    }
 }
 
 }

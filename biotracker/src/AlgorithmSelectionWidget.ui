@@ -84,6 +84,19 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QCheckBox" name="chk_enableTracking">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Tracking enabled</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
