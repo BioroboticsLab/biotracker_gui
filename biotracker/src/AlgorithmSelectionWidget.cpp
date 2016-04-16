@@ -48,6 +48,13 @@ void AlgorithmSelectionWidget::initConnects() {
                      this, &AlgorithmSelectionWidget::trackingAlgorithmSelected);
     QObject::connect(m_ui.chk_enableTracking, &QCheckBox::toggled,
                      this, &AlgorithmSelectionWidget::enableDisableTracking);
+
+    const QString shortcutTrackingKey = QString::fromStdString(
+                m_biotracker.getSettings().getValueOrDefault<std::string>
+                (GuiParam::SHORTCUT_TRACKING, "T"));
+    auto *shortcutTracking = new QShortcut(QKeySequence(shortcutTrackingKey), this);
+    QObject::connect(shortcutTracking, &QShortcut::activated, m_ui.chk_enableTracking,
+                     &QCheckBox::click);
 }
 
 void AlgorithmSelectionWidget::trackingAlgorithmSelected(const QString &name) {
