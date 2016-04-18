@@ -94,16 +94,27 @@ void Gui::browseCameras() {
     QListWidget *cameraListWidget = cameraDialog.getUi().cameraList;
     cameraListWidget->clear();
 
+    BioTracker::Core::Settings settings = m_biotracker.getSettings();
+    BioTracker::Core::TrackerStatus trackerStatus = m_biotracker.getTrackingThread().getStatus();
     // Add Item for each camera
     cv::VideoCapture vcap;
-    for (uint8_t i = 0; i <= 254; i++) {
-        vcap = cv::VideoCapture(i);
-        if (!vcap.isOpened()) {
-            break;
+    boost::optional<uint8_t> mediaTypeOpt = settings.maybeGetValueOfParam<uint8_t>(GuiParam::MEDIA_TYPE);
+    GuiParam::MediaType mediaType = mediaTypeOpt ? static_cast<GuiParam::MediaType>(*mediaTypeOpt) : GuiParam::MediaType::NoMedia;
+    boost::optional<int> camIdOpt = settings.maybeGetValueOfParam<int>(CaptureParam::CAP_CAMERA_ID);
+    int camId = camIdOpt ? *camIdOpt : -1;
+    for (int i = 0; i <= 254; i++) {
+        QListWidgetItem* item = new QListWidgetItem(QString("Camera ") + QString::number(static_cast<int>(i)));
+        if (mediaType == GuiParam::MediaType::Camera &&  camId == i && trackerStatus != BioTracker::Core::TrackerStatus::NothingLoaded) {
+            item->setText(item->text() + QString(" (in use)"));
+            item->setFlags(Qt::NoItemFlags);
+        } else {
+            vcap = cv::VideoCapture(i);
+            if (!vcap.isOpened()) {
+                break;
+            }
+            vcap.release();
         }
-        vcap.release();
-        cameraListWidget->addItem(QString("Camera ") + QString::number(static_cast<int>
-                                  (i)));
+        cameraListWidget->addItem(item);
     }
 
     if (cameraDialog.exec() == QDialog::Accepted) {
