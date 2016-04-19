@@ -102,6 +102,7 @@ void Gui::browseCameras() {
     GuiParam::MediaType mediaType = mediaTypeOpt ? static_cast<GuiParam::MediaType>(*mediaTypeOpt) : GuiParam::MediaType::NoMedia;
     boost::optional<int> camIdOpt = settings.maybeGetValueOfParam<int>(CaptureParam::CAP_CAMERA_ID);
     int camId = camIdOpt ? *camIdOpt : -1;
+    // OpenCV does not have an API to list camera devices https://github.com/Itseez/opencv/issues/4269
     for (int i = 0; i <= 254; i++) {
         QListWidgetItem* item = new QListWidgetItem(QString("Camera ") + QString::number(static_cast<int>(i)));
         if (mediaType == GuiParam::MediaType::Camera &&  camId == i && trackerStatus != BioTracker::Core::TrackerStatus::NothingLoaded) {
