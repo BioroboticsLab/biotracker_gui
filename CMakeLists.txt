@@ -57,6 +57,7 @@ include_directories(
     SYSTEM ${Qt5Widgets_INCLUDE_DIRS}
     SYSTEM ${OpenCV_INCLUDE_DIRS}
     SYSTEM ${Qt5OpenGL_INCLUDE_DIRS}
+    SYSTEM ${Boost_INCLUDE_DIRS}
 )
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
