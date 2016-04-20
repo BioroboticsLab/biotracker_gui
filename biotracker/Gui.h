@@ -3,7 +3,6 @@
 #include <QStringList>
 
 #include "biotracker/BioTrackerApp.h"
-#include "biotracker/ZmqTrackingAlgorithm.h"
 
 #include "MainWindow.h"
 
