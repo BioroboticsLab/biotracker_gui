@@ -22,6 +22,7 @@ Gui::Gui()
     initConnects();
 
     m_mainWindow.show();
+    m_biotracker.openMedumBySetting();
 }
 
 void Gui::initConnects() {
