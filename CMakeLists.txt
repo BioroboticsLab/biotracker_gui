@@ -60,6 +60,10 @@ include_directories(
     SYSTEM ${Boost_INCLUDE_DIRS}
 )
 
+link_directories(
+    ${Boost_LIBRARY_DIRS}
+)
+
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 add_definitions(${Qt5Widgets_DEFINITIONS})
