@@ -11,6 +11,9 @@ qt5_wrap_ui(UI_HEADERS ${ui})
 add_executable(BioTracker
     ${src} ${hdr} ${UI_RESOURCES} ${UI_HEADERS}
 )
+# Make this target the default target for the solution.
+set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT "BioTracker")
+
 include_directories( SYSTEM ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(BioTracker
     Qt5::Widgets
