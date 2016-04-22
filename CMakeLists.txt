@@ -70,3 +70,17 @@ add_definitions(${Qt5Widgets_DEFINITIONS})
 add_definitions(-DQT_NO_KEYWORDS)
 
 add_subdirectory(biotracker)
+
+# Make all targets (core and GUI) build to a common output directory on windows to work around copying DLLs.
+# Note that this must come before including the other projects.
+if(MSVC)
+    set(common_output_directory ${CMAKE_BINARY_DIR}/bin)
+    foreach(SUBTARGET BioTracker ${CPM_LIBRARIES})
+        foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
+            string(TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG)
+            set_target_properties(${SUBTARGET} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${common_output_directory})
+            set_target_properties(${SUBTARGET} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${common_output_directory})
+            set_target_properties(${SUBTARGET} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${common_output_directory})
+        endforeach()
+    endforeach()
+endif()

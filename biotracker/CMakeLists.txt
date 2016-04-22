@@ -13,7 +13,11 @@ add_executable(BioTracker
 )
 # Make this target the default target for the solution.
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT "BioTracker")
-
+# Give the debug executable a different name on windows as they are build
+# into the same directory.
+if(MSVC)
+    set_target_properties(BioTracker PROPERTIES OUTPUT_NAME_DEBUG BioTracker-Debug)
+endif()
 include_directories( SYSTEM ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(BioTracker
     Qt5::Widgets
