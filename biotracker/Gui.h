@@ -20,6 +20,10 @@ class Gui : public QObject {
     void initConnects();
     QStringList browse(const QString &title, const QString &filter);
 
+    boost::optional<std::vector<std::string>> getOpenFiles();
+    boost::optional<std::string> getFileHash(std::string const& filename, const size_t numFiles) const;
+    std::vector<std::string> getFilenamesFromPaths(std::vector<std::string> const& paths) const;
+
   private Q_SLOTS:
     void browseVideo();
     void browsePictures();
