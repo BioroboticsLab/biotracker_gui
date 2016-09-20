@@ -31,7 +31,7 @@ Gui::Gui()
 }
 
 void Gui::initConnects() {
-    //File -> Open Video
+    // File -> Open Video
     QObject::connect(m_mainWindow.getUi().actionOpen_Video, &QAction::triggered,
                      this, &Gui::browseVideo);
     QObject::connect(m_mainWindow.getUi().actionOpen_Picture, &QAction::triggered,
@@ -151,7 +151,6 @@ void Gui::loadTrackingData() {
 
     const QString path = QFileDialog::getOpenFileName(&m_mainWindow, "Load trackingdata", "", trackingdataFilter);
     if (!path.isEmpty()) {
-//        printGuiMessage("Restoring tracking data from " + filename, MSGS::NOTIFICATION);
         std::ifstream is(path.toStdString());
         cereal::JSONInputArchive ar(is);
 
@@ -224,14 +223,10 @@ void Gui::storeTrackingData() {
     dialog.setAcceptMode(QFileDialog::AcceptSave);
     dialog.setDefaultSuffix("tdat");
     dialog.setNameFilter("Data Files (*.tdat)");
-    // set displayed file as default filename:
-//    if (_filename.lastIndexOf(".") > 0)
-//        dialog.selectFile(_filename.left(_filename.lastIndexOf(".")));
     if (dialog.exec()) {
         const QStringList filenames = dialog.selectedFiles();
         if (!filenames.empty()) {
             assert(m_biotracker.getTrackingThread().getTrackerType());
-//            printGuiMessage("Storing tracking data in " + path.toStdString(), MSGS::NOTIFICATION);
 
             const std::string trackerType =
                     Core::Registry::getInstance().getStringByType().at(m_biotracker.getTrackingThread().getTrackerType().get());
