@@ -172,8 +172,8 @@ void VideoControlWidget::nextFrame() {
 void VideoControlWidget::fileOpened(const std::string filename,
                                     const size_t totalFrames,
                                     const double targetFps) {
-    (void)filename; // "un-use" filename. FileOpen is a generic event, but we dont
-    // need the filename at this place
+    (void)filename; /* @bug "un-used" filename. FileOpen is a generic event, but we dont
+    // need the filename at this place */
 	assert(totalFrames > 0);
     m_ui.sld_video->setMaximum(static_cast<int>(totalFrames - 1));
     m_ui.fps_label->setText(QString::number(targetFps));
@@ -239,6 +239,7 @@ void VideoControlWidget::onRequestRepaint() {
 }
 
 void VideoControlWidget::registerViews(const std::vector<Core::TrackingAlgorithm::View> views) {
+    /** @bug What is the sense this fuction?? VideoControlWidget::registerViews() */
     m_ui.comboBoxSelectedView->clear();
     m_ui.comboBoxSelectedView->addItem("Original");
     for (auto view : views) {

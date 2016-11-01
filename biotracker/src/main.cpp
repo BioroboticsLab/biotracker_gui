@@ -9,34 +9,45 @@
 #include "../Gui.h"
 #include "biotracker/util/stdext.h"
 
+/// NOTE edit by Andi
+#include "Controller/BioTrackerController.h"
+/// till here.
+
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
-    // workaround for cereal issue 144
-    // see: https://github.com/USCiLab/cereal/issues/144
-    std::setlocale(LC_NUMERIC, "C");
 
-    // meta types
-    qRegisterMetaType<cv::Mat>("cv::Mat");
-    qRegisterMetaType<BioTracker::Core::Messages::MessageType>("BioTracker::Core::Messages::MessageType");
-    qRegisterMetaType<BioTracker::Core::Messages::MessageType>("MessageType");
-    qRegisterMetaType<std::string>("std::string");
-    qRegisterMetaType<std::size_t>("std::size_t");
-    qRegisterMetaType<size_t>("size_t");
-    qRegisterMetaType<BioTracker::Core::TrackerType>("TrackerType");
+    /// NOTE edit by Andi
+    BioTrackerController mController;
 
-    if (SystemCompatibilityCheck::checkOpenGLSupport()) {
-        app.setOrganizationName("Biorobotics Lab / FU Berlin");
-        app.setApplicationName("BioTracker");
+    app.exec();
+    /// till here.
 
-        BioTracker::Gui::Gui w;
-        return app.exec();
-    } else {
-        static const std::string title = BioTracker::Core::Messages::System::APPLICATION_CANNOT_START;
-        static const std::string msg   = BioTracker::Core::Messages::System::NO_OPENGL;
-        QMessageBox::critical(nullptr,
-                              QString::fromStdString(title),
-                              QString::fromStdString(msg));
-    }
-    return EXIT_FAILURE;
+//    // workaround for cereal issue 144
+//    // see: https://github.com/USCiLab/cereal/issues/144
+//    std::setlocale(LC_NUMERIC, "C");
+
+//    // meta types
+//    qRegisterMetaType<cv::Mat>("cv::Mat");
+//    qRegisterMetaType<BioTracker::Core::Messages::MessageType>("BioTracker::Core::Messages::MessageType");
+//    qRegisterMetaType<BioTracker::Core::Messages::MessageType>("MessageType");
+//    qRegisterMetaType<std::string>("std::string");
+//    qRegisterMetaType<std::size_t>("std::size_t");
+//    qRegisterMetaType<size_t>("size_t");
+//    qRegisterMetaType<BioTracker::Core::TrackerType>("TrackerType");
+
+//    if (SystemCompatibilityCheck::checkOpenGLSupport()) {
+//        app.setOrganizationName("Biorobotics Lab / FU Berlin");
+//        app.setApplicationName("BioTracker");
+
+//        BioTracker::Gui::Gui w;
+//        return app.exec();
+//    } else {
+//        static const std::string title = BioTracker::Core::Messages::System::APPLICATION_CANNOT_START;
+//        static const std::string msg   = BioTracker::Core::Messages::System::NO_OPENGL;
+//        QMessageBox::critical(nullptr,
+//                              QString::fromStdString(title),
+//                              QString::fromStdString(msg));
+//    }
+//    return EXIT_FAILURE;
 }

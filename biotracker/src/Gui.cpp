@@ -59,6 +59,8 @@ void Gui::initConnects() {
                      m_mainWindow.getVideoControl(), &VideoControlWidget::fileOpened);
 }
 
+
+// NOTE andi this part is in new MainWindow
 void Gui::browseVideo() {
     static const QString videoFilter("Video files (*.avi *.wmv *.mp4 *.mkv *.mov)");
     std::vector<boost::filesystem::path> files;

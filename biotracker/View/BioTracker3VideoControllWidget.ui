@@ -116,7 +116,7 @@
       <item>
        <widget class="QPushButton" name="button_playPause">
         <property name="enabled">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="toolTip">
          <string>Play</string>
@@ -142,7 +142,7 @@
       <item>
        <widget class="QPushButton" name="button_stop">
         <property name="enabled">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="toolTip">
          <string>Stop</string>

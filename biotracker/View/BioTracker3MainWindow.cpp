@@ -1,13 +1,13 @@
 #include "BioTracker3MainWindow.h"
 #include "ui_BioTracker3MainWindow.h"
 
-#include "BioTrackerController.h"
+#include "Controller/BioTrackerController.h"
 #include "BioTracker3VideoControllWidget.h"
 #include "qfiledialog.h"
 #include "QLayout"
 
-BioTracker3MainWindow::BioTracker3MainWindow(QWidget *parent) :
-    QMainWindow(parent),
+BioTracker3MainWindow::BioTracker3MainWindow(QWidget *parent, IController *controller) :
+    IViewMainWindow(parent, controller),
     ui(new Ui::BioTracker3MainWindow)
 {
     ui->setupUi(this);
@@ -18,24 +18,17 @@ BioTracker3MainWindow::~BioTracker3MainWindow()
     delete ui;
 }
 
-void BioTracker3MainWindow::addController(IController *controller)
-{
-    mController = controller;
-}
-
-void BioTracker3MainWindow::addVideoControllWidget(QWidget *widget)
+void BioTracker3MainWindow::addVideoControllWidget(IView *widget)
 {
     QLayout *layout = new QGridLayout(this);
-    layout->addWidget(widget);
+    layout->addWidget(dynamic_cast<QWidget *>(widget));
     ui->videoControls->setLayout(layout);
 }
 
-// change to IView
-void BioTracker3MainWindow::addVideoView(BioTracker3VideoView *videoView)
+void BioTracker3MainWindow::addVideoView(IView *videoView)
 {
-    m_videoView = videoView;
-    m_videoView->setParent(ui->trackingArea);
-    ui->videoViewLayout->addWidget(m_videoView);
+    dynamic_cast<BioTracker3VideoView *>(videoView)->setParent(ui->trackingArea);
+    ui->videoViewLayout->addWidget(dynamic_cast<BioTracker3VideoView *>(videoView));
 }
 
 void BioTracker3MainWindow::on_actionOpen_Video_triggered()
@@ -47,6 +40,6 @@ void BioTracker3MainWindow::on_actionOpen_Video_triggered()
                              "Open video", "", videoFilter);
 
     if (!filename.isEmpty()) {
-        dynamic_cast<BioTrackerController *> (mController)->loadVideo(filename);
+        dynamic_cast<BioTrackerController *> (getController())->loadVideo(filename);
     }
 }
