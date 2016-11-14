@@ -18,7 +18,7 @@ BioTracker3VideoView::~BioTracker3VideoView()
 
 void BioTracker3VideoView::paintGL()
 {
-    BioTracker::Core::BioTracker3TextureObject *textureObject = dynamic_cast<BioTracker::Core::BioTracker3TextureObject *>(getModel());
+    BioTracker3TextureObject *textureObject = dynamic_cast<BioTracker3TextureObject *>(getModel());
     QImage img = textureObject->get();
 
 

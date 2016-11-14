@@ -102,7 +102,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="BioTracker.qrc">
+         <iconset resource="../src/BioTracker.qrc">
           <normaloff>:/BioTracker/resources/arrows-skip-back.png</normaloff>:/BioTracker/resources/arrows-skip-back.png</iconset>
         </property>
         <property name="iconSize">
@@ -128,7 +128,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="BioTracker.qrc">
+         <iconset resource="../src/BioTracker.qrc">
           <normaloff>:/BioTracker/resources/arrow-forward1.png</normaloff>:/BioTracker/resources/arrow-forward1.png</iconset>
         </property>
         <property name="iconSize">
@@ -157,7 +157,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="BioTracker.qrc">
+         <iconset resource="../src/BioTracker.qrc">
           <normaloff>:/BioTracker/resources/stop.png</normaloff>:/BioTracker/resources/stop.png</iconset>
         </property>
         <property name="iconSize">
@@ -186,7 +186,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="BioTracker.qrc">
+         <iconset resource="../src/BioTracker.qrc">
           <normaloff>:/BioTracker/resources/arrows-skip-forward.png</normaloff>:/BioTracker/resources/arrows-skip-forward.png</iconset>
         </property>
         <property name="iconSize">
@@ -220,7 +220,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="BioTracker.qrc">
+         <iconset resource="../src/BioTracker.qrc">
           <normaloff>:/BioTracker/resources/screenshot.png</normaloff>:/BioTracker/resources/screenshot.png</iconset>
         </property>
         <property name="iconSize">
@@ -343,7 +343,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="BioTracker.qrc">
+         <iconset resource="../src/BioTracker.qrc">
           <normaloff>:/BioTracker/resources/panZoom.png</normaloff>:/BioTracker/resources/panZoom.png</iconset>
         </property>
         <property name="iconSize">
@@ -505,7 +505,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="BioTracker.qrc"/>
+  <include location="../src/BioTracker.qrc"/>
  </resources>
  <connections/>
 </ui>

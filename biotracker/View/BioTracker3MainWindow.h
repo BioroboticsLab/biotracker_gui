@@ -17,7 +17,7 @@ class BioTracker3MainWindow : public IViewMainWindow
     Q_OBJECT
 
 public:
-    explicit BioTracker3MainWindow(QWidget *parent = 0, IController *controller = 0);
+    explicit BioTracker3MainWindow(QWidget *parent = 0, IController *controller = 0, IModel *model = 0);
     ~BioTracker3MainWindow();
 
     void addVideoControllWidget(IView *widget);

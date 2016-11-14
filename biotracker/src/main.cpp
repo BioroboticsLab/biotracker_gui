@@ -10,15 +10,26 @@
 #include "biotracker/util/stdext.h"
 
 /// NOTE edit by Andi
-#include "Controller/BioTrackerController.h"
-/// till here.
+#include "BioTracker3App.h"
+#include "biotracker/Controller/ControllerStrategies/GuiContext.h"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
 
+    qRegisterMetaType<cv::Mat>("cv::Mat");
+    qRegisterMetaType<std::size_t>("std::size_t");
+    qRegisterMetaType<size_t>("size_t");
+
+
+
     /// NOTE edit by Andi
-    BioTrackerController mController;
+    //BioTrackerController mController;
+
+    BioTracker3App bioTracker3(&app);
+    GuiContext context(&bioTracker3);
+    bioTracker3.setBioTrackerContext(&context);
+    bioTracker3.runBioTracker();
 
     app.exec();
     /// till here.

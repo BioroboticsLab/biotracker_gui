@@ -1,11 +1,11 @@
 #include "BioTracker3VideoControllWidget.h"
 #include "ui_BioTracker3VideoControllWidget.h"
+#include "Controller/ControllerPlayer.h"
 
-#include "Controller/BioTrackerController.h"
 #include "Interfaces/IPlayerState.h"
 
-BioTracker3VideoControllWidget::BioTracker3VideoControllWidget(IController *controller, IModel *model) :
-    IViewWidget(0, controller, model),
+BioTracker3VideoControllWidget::BioTracker3VideoControllWidget(QWidget *parent, IController *controller, IModel *model) :
+    IViewWidget(parent, controller, model),
     ui(new Ui::BioTracker3VideoControllWidget)
 {
     ui->setupUi(this);
@@ -21,15 +21,28 @@ BioTracker3VideoControllWidget::~BioTracker3VideoControllWidget()
     delete ui;
 }
 
+void BioTracker3VideoControllWidget::setSelectedView(QString str)
+{
+    if (!ui->comboBoxSelectedView->findText(str)) {
+        ui->comboBoxSelectedView->addItem(str);
+    }
+    ui->comboBoxSelectedView->setCurrentText(str);
+}
+
+void BioTracker3VideoControllWidget::setVideoViewComboboxModel(QStringListModel *comboboxModel)
+{
+    ui->comboBoxSelectedView->setModel(comboboxModel);
+}
+
 void BioTracker3VideoControllWidget::getNotified()
 {
-    ui->button_nextFrame->setEnabled(dynamic_cast<BioTracker3Player *>(getModel())->getStateOfStepForward());
-    ui->button_playPause->setEnabled(dynamic_cast<BioTracker3Player *>(getModel())->getStateOfPlay());
-    ui->button_previousFrame->setEnabled(dynamic_cast<BioTracker3Player *>(getModel())->getStateOfStepBack());
-    ui->button_stop->setEnabled(dynamic_cast<BioTracker3Player *>(getModel())->getStateOfStop());
+    ui->button_nextFrame->setEnabled(m_Forw);
+    ui->button_playPause->setEnabled(m_Play);
+    ui->button_previousFrame->setEnabled(m_Back);
+    ui->button_stop->setEnabled(m_Stop);
 
-    bool isPaused = dynamic_cast<BioTracker3Player *>(getModel())->getStateOfPause();
-    if (isPaused) {
+
+    if (m_Paus) {
         ui->button_playPause->setIcon(m_iconPause);
     }
     else {
@@ -37,19 +50,44 @@ void BioTracker3VideoControllWidget::getNotified()
     }
 }
 
+void BioTracker3VideoControllWidget::receiveTotalNumbFrames(size_t numb)
+{
+    m_TotalNumbFrames = numb;
+}
+
+void BioTracker3VideoControllWidget::receiveCurrentFrameNumber(size_t numb)
+{
+    m_CurrentFrameNumber = numb;
+    ui->frame_num_edit->setText(QString::number(m_CurrentFrameNumber));
+}
+
+void BioTracker3VideoControllWidget::receiveFPS(double fps)
+{
+    ui->fps_label->setText(QString::number(fps));
+}
+
+void BioTracker3VideoControllWidget::receiveVideoControllsStates(QVector<bool> states)
+{
+
+    m_Back = states.at(0);
+    m_Forw = states.at(1);
+    m_Paus = states.at(2);
+    m_Play = states.at(3);
+    m_Stop = states.at(4);
+
+}
+
 void BioTracker3VideoControllWidget::on_button_nextFrame_clicked()
 {
-    BioTrackerController *controller = dynamic_cast<BioTrackerController *>(getController());
+    ControllerPlayer *controller = dynamic_cast<ControllerPlayer *>(getController());
     controller->nextFrame();
 }
 
 void BioTracker3VideoControllWidget::on_button_playPause_clicked()
 {
-    bool isPaused = dynamic_cast<BioTracker3Player *>(getModel())->getStateOfPause();
+    ControllerPlayer *controller = dynamic_cast<ControllerPlayer *>(getController());
 
-    BioTrackerController *controller = dynamic_cast<BioTrackerController *>(getController());
-
-    if (isPaused) {
+    if (m_Paus) {
         controller->pause();
     }
     else {
@@ -59,13 +97,13 @@ void BioTracker3VideoControllWidget::on_button_playPause_clicked()
 
 void BioTracker3VideoControllWidget::on_button_stop_clicked()
 {
-    BioTrackerController *controller = dynamic_cast<BioTrackerController *>(getController());
+    ControllerPlayer *controller = dynamic_cast<ControllerPlayer *>(getController());
     controller->stop();
 }
 
 void BioTracker3VideoControllWidget::on_button_previousFrame_clicked()
 {
-    BioTrackerController *controller = dynamic_cast<BioTrackerController *>(getController());
+    ControllerPlayer *controller = dynamic_cast<ControllerPlayer *>(getController());
     controller->prevFrame();
 }
 
@@ -82,4 +120,13 @@ void BioTracker3VideoControllWidget::on_DurationChanged(int position)
 void BioTracker3VideoControllWidget::on_PositionChanged(int position)
 {
 
+}
+
+
+void BioTracker3VideoControllWidget::on_comboBoxSelectedView_currentTextChanged(const QString &arg1)
+{
+    QString name = arg1;
+    ControllerPlayer *controller = dynamic_cast<ControllerPlayer *>(getController());
+
+    controller->changeImageView(name);
 }
