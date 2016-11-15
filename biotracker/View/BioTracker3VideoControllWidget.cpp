@@ -50,23 +50,23 @@ void BioTracker3VideoControllWidget::getNotified()
     }
 }
 
-void BioTracker3VideoControllWidget::receiveTotalNumbFrames(size_t numb)
+void BioTracker3VideoControllWidget::setTotalNumbFrames(size_t numb)
 {
     m_TotalNumbFrames = numb;
 }
 
-void BioTracker3VideoControllWidget::receiveCurrentFrameNumber(size_t numb)
+void BioTracker3VideoControllWidget::setCurrentFrameNumber(size_t numb)
 {
     m_CurrentFrameNumber = numb;
     ui->frame_num_edit->setText(QString::number(m_CurrentFrameNumber));
 }
 
-void BioTracker3VideoControllWidget::receiveFPS(double fps)
+void BioTracker3VideoControllWidget::setFPS(double fps)
 {
     ui->fps_label->setText(QString::number(fps));
 }
 
-void BioTracker3VideoControllWidget::receiveVideoControllsStates(QVector<bool> states)
+void BioTracker3VideoControllWidget::setVideoControllsStates(QVector<bool> states)
 {
 
     m_Back = states.at(0);

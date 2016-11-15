@@ -25,13 +25,14 @@ public:
 
     void setVideoViewComboboxModel(QStringListModel *comboboxModel);
 
+    void setTotalNumbFrames(size_t numb);
+    void setCurrentFrameNumber(size_t numb);
+    void setFPS(double fps);
+    void setVideoControllsStates(QVector<bool> states);
+
 
 public Q_SLOTS:
     void getNotified();
-    void receiveTotalNumbFrames(size_t numb);
-    void receiveCurrentFrameNumber(size_t numb);
-    void receiveFPS(double fps);
-    void receiveVideoControllsStates(QVector<bool> states);
 
 private Q_SLOTS:
     void on_sld_video_sliderMoved(int position);

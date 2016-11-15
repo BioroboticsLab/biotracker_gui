@@ -15,11 +15,19 @@ public:
     BioTracker3VideoView(QWidget *parent, IController *controller = 0, IModel *model = 0);
     ~BioTracker3VideoView();
 
+
+    // QObject interface
+public:
+    bool event(QEvent *event) override;
+
 private:
     void paintGL() override;
 
+
 public Q_SLOTS:
     void getNotified();
+
+
 };
 
 #endif // BIOTRACKER3VIDEOVIEW_H
