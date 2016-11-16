@@ -5,6 +5,8 @@
 
 #include "Model/BioTracker3TextureObject.h"
 
+#include "Model/TrackedComponents/TrackedElement.h"
+
 
 BioTracker3VideoView::BioTracker3VideoView(QWidget *parent, IController *controller, IModel *model):
     IViewOpenGLWidget(parent, controller, model)
@@ -61,5 +63,10 @@ bool BioTracker3VideoView::event(QEvent *event)
 {
 //    if (event->type() == QEvent::Gesture)
 //            return gestureEvent(static_cast<QGestureEvent*>(event));
-        return QWidget::event(event);
+    return QWidget::event(event);
+}
+
+void BioTracker3VideoView::addRect(IModel *model)
+{
+    myRect = model;
 }

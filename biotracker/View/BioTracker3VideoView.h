@@ -20,12 +20,17 @@ public:
 public:
     bool event(QEvent *event) override;
 
+    void addRect(IModel *model);
+
 private:
     void paintGL() override;
 
 
 public Q_SLOTS:
     void getNotified();
+
+private:
+    IModel *myRect;
 
 
 };
