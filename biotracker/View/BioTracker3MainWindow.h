@@ -2,7 +2,7 @@
 #define BIOTRACKER3MAINWINDOW_H
 
 #include <boost/filesystem.hpp>
-#include "Interfaces/IViewMainWindow.h"
+#include "Interfaces/IView/IViewMainWindow.h"
 
 // delete
 #include "BioTracker3VideoView.h"

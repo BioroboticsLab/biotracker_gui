@@ -1,11 +1,9 @@
 #include "BioTracker3VideoView.h"
 
 #include <biotracker/util/ScreenHelper.h>
-#include "Interfaces/icontroller.h"
+#include "Interfaces/IController/icontroller.h"
 
 #include "Model/BioTracker3TextureObject.h"
-
-#include "Model/TrackedComponents/TrackedElement.h"
 
 
 BioTracker3VideoView::BioTracker3VideoView(QWidget *parent, IController *controller, IModel *model):
@@ -57,16 +55,4 @@ void BioTracker3VideoView::paintGL()
 void BioTracker3VideoView::getNotified()
 {
     this->update();
-}
-
-bool BioTracker3VideoView::event(QEvent *event)
-{
-//    if (event->type() == QEvent::Gesture)
-//            return gestureEvent(static_cast<QGestureEvent*>(event));
-    return QWidget::event(event);
-}
-
-void BioTracker3VideoView::addRect(IModel *model)
-{
-    myRect = model;
 }

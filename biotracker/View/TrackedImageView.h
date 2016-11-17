@@ -1,10 +1,10 @@
 #ifndef TRACKEDIMAGEVIEW_H
 #define TRACKEDIMAGEVIEW_H
 
-#include "Interfaces/IViewOpenGLWidget.h"
+#include "Interfaces/IView/IViewOpenGLWidget.h"
 
 #include "QPainter"
-#include "Interfaces/IViewWidget.h"
+#include "Interfaces/IView/IViewWidget.h"
 #include "TextureObject.h"
 
 class TrackedImageView : public IViewOpenGLWidget

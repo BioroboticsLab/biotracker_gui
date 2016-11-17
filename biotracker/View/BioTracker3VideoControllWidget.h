@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include "QIcon"
-#include "Interfaces/IViewWidget.h"
+#include "Interfaces/IView/IViewWidget.h"
 #include "QMap"
 #include "QMetaEnum"
 #include "QStringListModel"

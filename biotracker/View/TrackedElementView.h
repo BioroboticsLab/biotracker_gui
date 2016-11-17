@@ -1,7 +1,7 @@
 #ifndef TRACKEDELEMENTVIEW_H
 #define TRACKEDELEMENTVIEW_H
 
-#include "../biotracker/Interfaces/IViewTrackedComponent.h"
+#include "../biotracker/Interfaces/IView/IViewTrackedComponent.h"
 
 class TrackedElementView : public IViewTrackedComponent
 {
@@ -17,6 +17,14 @@ public:
     // IViewTrackedComponent interface
 public Q_SLOTS:
     void getNotified() override;
+
+    // QGraphicsItem interface
+protected:
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+
+private:
+    QRectF m_boundingRect;
 };
 
 #endif // TRACKEDELEMENTVIEW_H

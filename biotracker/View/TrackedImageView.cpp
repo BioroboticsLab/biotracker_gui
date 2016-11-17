@@ -1,7 +1,7 @@
 #include "TrackedImageView.h"
 
 #include <biotracker/util/ScreenHelper.h>
-#include "Interfaces/icontroller.h"
+#include "Interfaces/IController/icontroller.h"
 
 #include "Model/BioTracker3TextureObject.h"
 
