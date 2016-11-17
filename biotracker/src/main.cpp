@@ -16,6 +16,7 @@
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
+    /// NOTE edit by Andi
 
     qRegisterMetaType<cv::Mat>("cv::Mat");
     qRegisterMetaType<std::size_t>("std::size_t");
@@ -23,7 +24,6 @@ int main(int argc, char *argv[]) {
 
 
 
-    /// NOTE edit by Andi
     //BioTrackerController mController;
 
     BioTracker3App bioTracker3(&app);
