@@ -6,6 +6,8 @@
 #include "qfiledialog.h"
 #include "QLayout"
 
+#include "View/GraphicsView.h"
+
 BioTracker3MainWindow::BioTracker3MainWindow(QWidget *parent, IController *controller, IModel *model) :
     IViewMainWindow(parent, controller, model),
     ui(new Ui::BioTracker3MainWindow)
@@ -27,8 +29,12 @@ void BioTracker3MainWindow::addVideoControllWidget(IView *widget)
 
 void BioTracker3MainWindow::addVideoView(IView *videoView)
 {
-    dynamic_cast<BioTracker3VideoView *>(videoView)->setParent(ui->trackingArea);
-    ui->videoViewLayout->addWidget(dynamic_cast<BioTracker3VideoView *>(videoView));
+    GraphicsView *graphView = dynamic_cast<GraphicsView *>(videoView);
+    graphView->setParent(ui->trackingArea);
+    ui->videoViewLayout->addWidget(graphView);
+    // gl widget
+    //dynamic_cast<BioTracker3VideoView *>(videoView)->setParent(ui->trackingArea);
+    //ui->videoViewLayout->addWidget(dynamic_cast<BioTracker3VideoView *>(videoView));
 }
 
 void BioTracker3MainWindow::on_actionOpen_Video_triggered()

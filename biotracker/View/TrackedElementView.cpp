@@ -7,7 +7,9 @@ TrackedElementView::TrackedElementView(QGraphicsItem *parent, IController *contr
     IViewTrackedComponent(parent, controller, model)
 {
     TrackedElement *elem = dynamic_cast<TrackedElement *>(getModel());
-    m_boundingRect = QRectF(0,0, elem->getX(), elem->getY());
+    m_boundingRect = QRectF(0,0, 100, 100);
+
+    setAcceptHoverEvents(true);
 }
 
 QRectF TrackedElementView::boundingRect() const
@@ -43,22 +45,22 @@ void TrackedElementView::getNotified()
     update();
 }
 
-void TrackedElementView::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void TrackedElementView::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     TrackedElement *elem = dynamic_cast<TrackedElement *>(getModel());
 
     elem->pressed();
     update();
 
-    QGraphicsObject::mousePressEvent(event);
+    QGraphicsObject::hoverEnterEvent(event);
 }
 
-void TrackedElementView::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void TrackedElementView::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     TrackedElement *elem = dynamic_cast<TrackedElement *>(getModel());
 
     elem->notPressed();
     update();
 
-    QGraphicsObject::mousePressEvent(event);
+    QGraphicsObject::hoverLeaveEvent(event);
 }

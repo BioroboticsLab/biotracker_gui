@@ -18,13 +18,15 @@ public:
 public Q_SLOTS:
     void getNotified() override;
 
-    // QGraphicsItem interface
-protected:
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
-
 private:
     QRectF m_boundingRect;
+
+
+
+    // QGraphicsItem interface
+protected:
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 };
 
 #endif // TRACKEDELEMENTVIEW_H
